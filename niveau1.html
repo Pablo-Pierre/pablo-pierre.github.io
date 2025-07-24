@@ -39,18 +39,17 @@
       margin-top: 20px;
       font-size: 1.2rem;
     }
-    #feedbackImage {
-      position: fixed;
-      top: 25%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80vw;
-      height: auto;
-      max-height: 80vh;
-      object-fit: contain;
-      z-index: 999;
-      display: none;
-    }
+#feedbackImage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 999;
+  display: none;
+}
+
   </style>
 </head>
 <body>
@@ -141,6 +140,15 @@
         }
       }, 3000);
     }
+
+    const preloadImages = () => {
+      const imgs = ['correct.png', 'wrong.png'];
+      imgs.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
+    preloadImages();
 
     showQuestion();
   </script>
