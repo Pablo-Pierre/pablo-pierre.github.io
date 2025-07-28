@@ -144,31 +144,31 @@
       livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
     }
 
-    function showQuestion() {
-      if (index >= level1Questions.length) {
-        alert("Bravo ! Tu as terminé le niveau 1.");
-        window.location.href = 'home_page.html';
-        return;
+      function showQuestion() {
+        if (index >= level1Questions.length) {
+          alert("Bravo ! Tu as terminé le niveau 2.");
+          window.location.href = 'home_page.html';
+          return;
+        }
+
+        updateDisplay();
+        const q = level1Questions[index];
+        questionEl.textContent = q.question;
+        choicesEl.innerHTML = '';
+        feedbackImage.style.display = 'none';
+        statusEl.textContent = '';
+
+        // Ajout du compteur de progression
+        document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
+
+        q.choices.forEach(choice => {
+          const btn = document.createElement('div');
+          btn.className = 'choice';
+          btn.textContent = choice;
+          btn.onclick = () => handleAnswer(choice === q.correct);
+          choicesEl.appendChild(btn);
+        });
       }
-
-      updateDisplay();
-      const q = level1Questions[index];
-      questionEl.textContent = q.question;
-      choicesEl.innerHTML = '';
-      feedbackImage.style.display = 'none';
-      statusEl.textContent = '';
-
-      // Ajout du compteur de progression
-      document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
-
-      q.choices.forEach(choice => {
-        const btn = document.createElement('div');
-        btn.className = 'choice';
-        btn.textContent = choice;
-        btn.onclick = () => handleAnswer(choice === q.correct);
-        choicesEl.appendChild(btn);
-      });
-    }
 
 
     function handleAnswer(correct) {
