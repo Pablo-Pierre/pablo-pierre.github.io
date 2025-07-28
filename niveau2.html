@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nope Quiz - Niveau 1</title>
+  <title>Nope Quiz - Niveau 2</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
   <style>
     body {
@@ -64,58 +64,59 @@
   </div>
 
   <script>
-  const level1Questions = [
-    {
-      question: "Combien fait 6 + 4 * 3 !",
-      choices: ["30", "18", "J’ai arrêté les maths en 4e", "x"],
-      correct: "30"
-    },
-    {
-      question: "Quel est le résultat de (2 + 3)² ?",
-      choices: ["25", "10", "Erreur de parenthèses", "2 + 9 = 11"],
-      correct: "25"
-    },
-    {
-      question: "Combien font 10 - 2 * 5 ?",
-      choices: ["0", "40", "Impossible", "8"],
-      correct: "0"
-    },
-    {
-      question: "Combien de zéros dans 1000 x 1000 ?",
-      choices: ["6", "3", "4", "J’ai paniqué"],
-      correct: "6"
-    },
-    {
-      question: "Combien vaut 0,1 + 0,2 ?",
-      choices: ["0.3", "0.30000000000000004", "3", "Ça dépend de la calculette"],
-      correct: "0.30000000000000004"
-    },
-    {
-      question: "Que donne √(16) + √(9) ?",
-      choices: ["7", "25", "4 + 3", "Racine carrée, c’est du jardinage ?"],
-      correct: "7"
-    },
-    {
-      question: "Combien fait 2^3^2 ?",
-      choices: ["512", "64", "16", "Erreur d’exposant"],
-      correct: "512" // car 3^2 = 9 puis 2^9 = 512
-    },
-    {
-      question: "Si x = 5, combien vaut x² + 2x + 1 ?",
-      choices: ["36", "25", "Impossible sans calculatrice", "x"],
-      correct: "36"
-    },
-    {
-      question: "Une demi-baguette coûte 50 centimes. Combien coûtent 3 baguettes entières ?",
-      choices: ["3 €", "1,50 €", "75 centimes", "3 demi-baguettes"],
-      correct: "3 €"
-    },
-    {
-      question: "Combien font (10 + 2) / (3 * 2) ?",
-      choices: ["2", "4", "12/6", "J’ai vu des parenthèses, j’ai fui"],
-      correct: "2"
-    }
-  ];
+const level2Questions = [
+  {
+    question: "Combien vaut 1 + 2 + 3 + 4 + ... selon Ramanujan ?",
+    choices: ["∞", "-1/12", "Une infinité de baffes", "Je refuse ce genre de calculs"],
+    correct: "-1/12"
+  },
+  {
+    question: "Est-ce que 0.999... est égal à 1 ?",
+    choices: ["Oui", "Non", "Presque", "C’est un complot de la calculatrice"],
+    correct: "Oui"
+  },
+  {
+    question: "Quelle est la valeur de l’intégrale de Gauss : ∫ de -∞ à +∞ de e^(-x²) dx ?",
+    choices: ["√π", "π", "2", "Je ne sais même pas lire ça"],
+    correct: "√π"
+  },
+  {
+    question: "Combien vaut cette somme : 1 - 1 + 1 - 1 + 1 - 1 + ... ?",
+    choices: ["0", "1", "1/2", "Elle est schizophrène"],
+    correct: "1/2"
+  },
+  {
+    question: "Combien vaut cette intégrale : ∫ de 0 à ∞ de (x / (e^x - 1)) dx ?",
+    choices: ["π² / 6", "2", "∞", "Je suis tombé dans les pommes"],
+    correct: "π² / 6"
+  },
+  {
+    question: "Quel est le résultat de cette série : ∑ (1/n²) pour n=1 à ∞ ?",
+    choices: ["π²/6", "1.6449...", "Elle diverge", "Il faut une loupe"],
+    correct: "π²/6"
+  },
+  {
+    question: "Combien vaut ln(e^2) ?",
+    choices: ["2", "e²", "ln(e²)", "Je hais les logs"],
+    correct: "2"
+  },
+  {
+    question: "La série ∑ (1/n) pour n=1 à ∞ est-elle convergente ?",
+    choices: ["Non", "Oui", "Elle hésite", "C’est confidentiel"],
+    correct: "Non"
+  },
+  {
+    question: "Combien vaut cette intégrale : ∫ de 0 à 1 de 4 / (1 + x²) dx ?",
+    choices: ["π", "2", "1", "Je préfère les cookies"],
+    correct: "π"
+  },
+  {
+    question: "Combien fait lim(n→∞) (1 + 1/n)^n ?",
+    choices: ["e", "1", "∞", "Un nombre magique"],
+    correct: "e"
+  }
+];
+
 
     let index = 0;
     let score = parseInt(localStorage.getItem('score')) || 0;
@@ -134,14 +135,14 @@
     }
 
     function showQuestion() {
-      if (index >= level1Questions.length) {
-        alert("Bravo ! Tu as terminé le niveau 1.");
+      if (index >= level2Questions.length) {
+        alert("Bravo ! Tu as terminé le niveau 2.");
         window.location.href = 'home_page.html';
         return;
       }
 
       updateDisplay();
-      const q = level1Questions[index];
+      const q = level2Questions[index];
       questionEl.textContent = q.question;
       choicesEl.innerHTML = '';
       feedbackImage.style.display = 'none';
