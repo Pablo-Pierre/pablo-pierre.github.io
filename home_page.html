@@ -47,9 +47,22 @@
       background-color: #704c2b;
       transform: scale(1.05);
     }
+    .overlay-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 100;
+}
+
   </style>
 </head>
 <body>
+  <img src="doigt.png" alt="Doigt" class="overlay-image">
   <div class="container">
     <h1>Bienvenue dans le Royaume du Nope Quiz</h1>
     <h2>Choisis ton épreuve :</h2>
