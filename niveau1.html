@@ -55,12 +55,19 @@
   letter-spacing: 0.5px;
 }
 
+.question-progress {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #ffddaa;
+}
+
   </style>
 </head>
 <body>
   <div class="container">
     <div id="lives"></div>
     <div id="score"></div>
+    <div id="progress" class="question-progress"></div>
     <h2 class="question" id="question"></h2>
     <div id="choices"></div>
     <img id="feedbackImage" src="" alt="Feedback">
@@ -147,14 +154,12 @@
       updateDisplay();
       const q = level1Questions[index];
       questionEl.textContent = q.question;
-      if (q.question.includes('!')) {
-        questionEl.classList.add('math-font');
-      } else {
-        questionEl.classList.remove('math-font');
-      }
       choicesEl.innerHTML = '';
       feedbackImage.style.display = 'none';
       statusEl.textContent = '';
+
+      // Ajout du compteur de progression
+      document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
 
       q.choices.forEach(choice => {
         const btn = document.createElement('div');
@@ -164,6 +169,7 @@
         choicesEl.appendChild(btn);
       });
     }
+
 
     function handleAnswer(correct) {
       feedbackImage.src = correct ? 'correct.png' : 'wrong.png';

@@ -51,12 +51,19 @@
   display: none;
 }
 
+.question-progress {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #ffddaa;
+}
+
   </style>
 </head>
 <body>
   <div class="container">
     <div id="lives"></div>
     <div id="score"></div>
+    <div id="progress" class="question-progress"></div>
     <h2 class="question" id="question"></h2>
     <div id="choices"></div>
     <img id="feedbackImage" src="" alt="Feedback">
@@ -135,28 +142,31 @@ const level3Questions = [
       livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
     }
 
-    function showQuestion() {
-      if (index >= level3Questions.length) {
-        alert("Bravo ! Tu as terminé le niveau 3.");
-        window.location.href = 'home_page.html';
-        return;
+      function showQuestion() {
+        if (index >= level1Questions.length) {
+          alert("Bravo ! Tu as terminé le niveau 3.");
+          window.location.href = 'home_page.html';
+          return;
+        }
+
+        updateDisplay();
+        const q = level3Questions[index];
+        questionEl.textContent = q.question;
+        choicesEl.innerHTML = '';
+        feedbackImage.style.display = 'none';
+        statusEl.textContent = '';
+
+        // Ajout du compteur de progression
+        document.getElementById('progress').textContent = `Question ${index + 1} / ${level3Questions.length}`;
+
+        q.choices.forEach(choice => {
+          const btn = document.createElement('div');
+          btn.className = 'choice';
+          btn.textContent = choice;
+          btn.onclick = () => handleAnswer(choice === q.correct);
+          choicesEl.appendChild(btn);
+        });
       }
-
-      updateDisplay();
-      const q = level3Questions[index];
-      questionEl.textContent = q.question;
-      choicesEl.innerHTML = '';
-      feedbackImage.style.display = 'none';
-      statusEl.textContent = '';
-
-      q.choices.forEach(choice => {
-        const btn = document.createElement('div');
-        btn.className = 'choice';
-        btn.textContent = choice;
-        btn.onclick = () => handleAnswer(choice === q.correct);
-        choicesEl.appendChild(btn);
-      });
-    }
 
     function handleAnswer(correct) {
       feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
