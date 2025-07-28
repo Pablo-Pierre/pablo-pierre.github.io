@@ -50,6 +50,10 @@
   z-index: 999;
   display: none;
 }
+.math-font {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
 
   </style>
 </head>
@@ -143,6 +147,11 @@
       updateDisplay();
       const q = level1Questions[index];
       questionEl.textContent = q.question;
+      if (q.question.includes('!')) {
+        questionEl.classList.add('math-font');
+      } else {
+        questionEl.classList.remove('math-font');
+      }
       choicesEl.innerHTML = '';
       feedbackImage.style.display = 'none';
       statusEl.textContent = '';
