@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nope Quiz - Niveau 3</title>
+  <title>Nope Quiz - Niveau 4</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
   <style>
     body {
@@ -64,56 +64,56 @@
   </div>
 
   <script>
-const level3Questions = [
+const level4Questions = [
   {
-    question: "Qui a peint la Joconde ?",
-    choices: ["Léonardo DiCaprio", "Léonard de Vinci", "Mon cousin Kevin", "Une IA très motivée"],
-    correct: "Léonard de Vinci"
+    question: "Si un train part de Paris à 10h et roule à 100 km/h, quelle est la couleur du cheval blanc d’Henri IV ?",
+    choices: ["Blanc", "Bleu", "Je suis confus", "Train ?"],
+    correct: "Blanc"
   },
   {
-    question: "Quel est le pays le plus peuplé au monde ?",
-    choices: ["La Chine", "L’Inde", "Le serveur de Minecraft", "Mon appart en soirée"],
-    correct: "L’Inde"
+    question: "Je mens toujours. Que suis-je ?",
+    choices: ["Un menteur", "Un paradoxe", "Une phrase instable", "Un commentaire YouTube"],
+    correct: "Un paradoxe"
   },
   {
-    question: "Quelle est la capitale de l’Australie ?",
-    choices: ["Sydney", "Melbourne", "Canberra", "Koalaville"],
-    correct: "Canberra"
+    question: "Combien de mois ont 28 jours ?",
+    choices: ["1", "12", "Février", "Ça dépend du calendrier lunaire"],
+    correct: "12"
   },
   {
-    question: "Combien de tentacules a une pieuvre ?",
-    choices: ["8", "7.5", "Ça dépend de son humeur", "Un nombre pair variable"],
-    correct: "8"
+    question: "Un avion s’écrase à la frontière entre la France et la Belgique. Où enterre-t-on les survivants ?",
+    choices: ["On ne les enterre pas", "En France", "En Belgique", "Au cimetière de l’absurde"],
+    correct: "On ne les enterre pas"
   },
   {
-    question: "Qui a découvert l’Amérique ?",
-    choices: ["Christophe Colomb", "Un GPS en panne", "Les Vikings", "Amérigo Vespoucci dans ses rêves"],
-    correct: "Christophe Colomb"
+    question: "Si 5 machines font 5 objets en 5 minutes, combien de temps faut-il à 100 machines pour faire 100 objets ?",
+    choices: ["5 minutes", "1 minute", "100 minutes", "Je jette l’éponge"],
+    correct: "5 minutes"
   },
   {
-    question: "Quel est l’ingrédient principal du guacamole ?",
-    choices: ["L’avocat", "Le kiwi écrasé", "Le slime vert", "Une décision mûre"],
-    correct: "L’avocat"
+    question: "Dans quel mois les gens dorment-ils le moins ?",
+    choices: ["Février", "Mars", "Octobre", "Pendant les partiels"],
+    correct: "Février"
   },
   {
-    question: "Quel animal est le roi de la savane ?",
-    choices: ["Le lion", "Simba", "Roi Julian", "La girafe mais elle se cache"],
-    correct: "Le lion"
+    question: "Que se passe-t-il si Pinocchio dit 'Mon nez va s’allonger' ?",
+    choices: ["C’est un paradoxe", "Il explose", "Il ment et dit la vérité", "Son nez se rebelle"],
+    correct: "C’est un paradoxe"
   },
   {
-    question: "Combien de planètes dans le système solaire ?",
-    choices: ["8", "9 (Pluton est une diva)", "7 et demi", "Toutes sauf la Terre, on se barre"],
-    correct: "8"
+    question: "Quel mot est toujours mal orthographié dans le dictionnaire ?",
+    choices: ["Mal orthographié", "Pharmachien", "Orthaugraphié", "Malgraffé"],
+    correct: "Mal orthographié"
   },
   {
-    question: "Qui a écrit *Roméo et Juliette* ?",
-    choices: ["Shakespeare", "Roméo lui-même", "Cyrano de Bergerac", "Juliette pendant les pubs"],
-    correct: "Shakespeare"
+    question: "Si un arbre tombe dans une forêt sans personne pour l’entendre, fait-il du bruit ?",
+    choices: ["C’est philosophique", "Oui", "Non", "Seulement s’il a des AirPods"],
+    correct: "C’est philosophique"
   },
   {
-    question: "Combien y a-t-il de continents ?",
-    choices: ["7", "6 et demi", "4 (selon Flat Earth Inc.)", "Une bonne dizaine si t'es bourré"],
-    correct: "7"
+    question: "Est-ce que la réponse à cette question est non ?",
+    choices: ["Oui", "Non", "Peut-être", "Erreur 404"],
+    correct: "Erreur 404"
   }
 ];
 
@@ -136,14 +136,14 @@ const level3Questions = [
     }
 
     function showQuestion() {
-      if (index >= level3Questions.length) {
+      if (index >= level4Questions.length) {
         alert("Bravo ! Tu as terminé le niveau 3.");
         window.location.href = 'home_page.html';
         return;
       }
 
       updateDisplay();
-      const q = level3Questions[index];
+      const q = level4Questions[index];
       questionEl.textContent = q.question;
       choicesEl.innerHTML = '';
       feedbackImage.style.display = 'none';
