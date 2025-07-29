@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nope Quiz – Niveau Paradoxes</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: 300%;
+      font-family: 'MedievalSharp', cursive;
+      color: #fff6dd;
+      text-align: center;
+    }
+
+    .container {
+      padding: 30px;
+    }
+    .question {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 4px black;
+    }
+    .question-progress {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #ffddaa;
+    }
+    .choice {
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .choice:hover {
+      background-color: #704c2b;
+    }
+    .status {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+    #feedbackImage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 999;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="lives"></div>
+    <div id="score"></div>
+    <div id="progress" class="question-progress"></div>
+    <h2 class="question" id="question"></h2>
+    <div id="choices"></div>
+    <img id="feedbackImage" src="" alt="Feedback">
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+const level6Questions = [
+  {
+    question: "Quel joueur détient le record du plus grand nombre de raquettes cassées en une saison ?",
+    choices: ["Nick Kyrgios", "Marat Safin", "McEnroe", "Un castor mutant"],
+    correct: "Marat Safin"
+  },
+  {
+    question: "Combien de raquettes Marat Safin a-t-il cassé en 1999 ?",
+    choices: ["5", "27", "48", "Quelqu’un l’arrête lui !"],
+    correct: "48"
+  },
+  {
+    question: "Quel est le match le plus long de l’histoire du tennis ?",
+    choices: ["Federer vs Nadal – 2008", "Isner vs Mahut – 2010", "Djokovic vs le destin", "Un match jamais fini"],
+    correct: "Isner vs Mahut – 2010"
+  },
+  {
+    question: "Combien de temps a duré le match Isner–Mahut à Wimbledon 2010 ?",
+    choices: ["4h42", "7h06", "11h05", "3 jours et une sieste"],
+    correct: "11h05"
+  },
+  {
+    question: "Quel joueur a reçu un avertissement pour avoir insulté... une serviette ?",
+    choices: ["Kyrgios", "Fognini", "Benoît Paire", "Une serviette n'a pas de sentiments"],
+    correct: "Benoît Paire"
+  },
+  {
+    question: "Quel joueur a demandé à son adversaire s’il voulait aller boire une bière en plein match ?",
+    choices: ["Monfils", "Djokovic", "Kyrgios", "John Lemoine de D2 Loire-Atlantique"],
+    correct: "Kyrgios"
+  },
+  {
+    question: "Combien de sets y a-t-il eu dans le match Isner–Mahut (score final : 70-68 au 5e) ?",
+    choices: ["3", "4", "5", "70 et des poussières"],
+    correct: "5"
+  },
+  {
+    question: "Quel joueur a déjà simulé une blessure pour... aller aux toilettes plus longtemps ?",
+    choices: ["Zverev", "Tsitsipas", "Medvedev", "Le gars en moi pendant les contrôles"],
+    correct: "Tsitsipas"
+  },
+  {
+    question: "Quel joueur est connu pour ses tics de placement de bouteilles alignées ?",
+    choices: ["Nadal", "Federer", "Gasquet", "Un maniaque de la bouteille"],
+    correct: "Nadal"
+  },
+  {
+    question: "Quelle est la balle la plus rapide jamais enregistrée au service chez les hommes ?",
+    choices: ["213 km/h", "238 km/h", "263 km/h", "Plus vite qu’un scooter volé"],
+    correct: "263 km/h"
+  }
+];
+
+    let index = 0;
+    let score = 0;
+    let lives = 3;
+
+    const questionEl = document.getElementById('question');
+    const choicesEl = document.getElementById('choices');
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const statusEl = document.getElementById('status');
+    const feedbackImage = document.getElementById('feedbackImage');
+    const progressEl = document.getElementById('progress');
+
+    function updateDisplay() {
+      scoreEl.textContent = `Score : ${score}`;
+      livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+      progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
+    }
+
+    function showQuestion() {
+      if (index >= questions.length) {
+        alert("Bravo ! Tu as terminé le niveau.");
+        window.location.href = 'home_page.html';
+        return;
+      }
+
+      updateDisplay();
+      const q = questions[index];
+      statusEl.textContent = '';
+      choicesEl.innerHTML = '';
+      feedbackImage.style.display = 'none';
+
+      questionEl.innerHTML = q.question;
+
+      if (q.trickId) {
+        document.getElementById(q.trickId).onclick = () => handleAnswer(true);
+      }
+
+      q.choices.forEach(choice => {
+        const btn = document.createElement('div');
+        btn.className = 'choice';
+        btn.textContent = choice;
+        btn.onclick = () => handleAnswer(choice === q.correct);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(correct) {
+      feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+      feedbackImage.style.display = 'block';
+
+      if (correct) {
+        score++;
+        statusEl.textContent = "Bonne réponse !";
+        index++;
+      } else {
+        lives--;
+        statusEl.textContent = "NOPE !";
+        updateDisplay();
+      }
+
+      setTimeout(() => {
+        feedbackImage.style.display = 'none';
+        if (lives <= 0) {
+          alert("Game Over !");
+          window.location.href = 'home_page.html';
+        } else {
+          showQuestion();
+        }
+      }, 2500);
+    }
+
+    const preloadImages = () => {
+      const imgs = ['correct.png', 'wrong.png'];
+      imgs.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
+    preloadImages();
+    showQuestion();
+  </script>
+</body>
+</html>
