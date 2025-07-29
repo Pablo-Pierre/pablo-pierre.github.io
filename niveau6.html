@@ -55,9 +55,36 @@
       z-index: 999;
       display: none;
     }
+    .menu-button {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.menu-button a {
+  text-decoration: none;
+  background-color: #5c3b1e;
+  color: #fff6dd;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.menu-button a:hover {
+  background-color: #704c2b;
+}
+
   </style>
 </head>
 <body>
+        <!-- Bouton Retour Menu -->
+    <div class="menu-button">
+    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
+    </div>
+
   <div class="container">
     <div id="lives"></div>
     <div id="score"></div>
