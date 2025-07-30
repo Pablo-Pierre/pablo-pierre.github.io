@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nope Quiz – Niveau Paradoxes</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: 300%;
+      font-family: 'MedievalSharp', cursive;
+      color: #fff6dd;
+      text-align: center;
+    }
+
+    .container {
+      padding: 30px;
+    }
+    .question {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 4px black;
+    }
+    .question-progress {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #ffddaa;
+    }
+    .choice {
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .choice:hover {
+      background-color: #704c2b;
+    }
+    .status {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+    #feedbackImage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 999;
+      display: none;
+    }
+
+        .menu-button {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.menu-button a {
+  text-decoration: none;
+  background-color: #5c3b1e;
+  color: #fff6dd;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.menu-button a:hover {
+  background-color: #704c2b;
+}
+
+  </style>
+</head>
+<body>
+          <!-- Bouton Retour Menu -->
+    <div class="menu-button">
+    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
+    </div>
+  <div class="container">
+    <div id="lives"></div>
+    <div id="score"></div>
+    <div id="progress" class="question-progress"></div>
+    <h2 class="question" id="question"></h2>
+    <div id="choices"></div>
+    <img id="feedbackImage" src="" alt="Feedback">
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Trouvez l’<span id='trick1' style='color: red; cursor: pointer;'>errreur</span> dans cette phrase.",
+        choices: ["La grammaire", "La ponctuation", "Il manque un mot", "Elle est parfaite"],
+        correct: null,
+        trickId: "trick1"
+      },
+      {
+        question: "La réponse à cette question est D.",
+        choices: ["A", "B", "C", "D"],
+        correct: "D"
+      },
+      {
+        question: "Quel mot devient plus court quand on lui ajoute deux lettres ?",
+        choices: ["Court", "Petit", "Long", "Court-circuit"],
+        correct: "Court"
+      },
+      {
+        question: "Un avion s’écrase à la frontière. Où enterre-t-on les survivants ?",
+        choices: ["France", "Espagne", "Frontière", "Nulle part"],
+        correct: "Nulle part"
+      },
+      {
+        question: 'Clique <span id="trick3" style="color: lightgreen; cursor: pointer;">ici</span> pour gagner.',
+        choices: ['Là', 'Là-bas', 'Pas ici', 'Nulle part'],
+        correct: null,
+        trickId: 'trick3'
+      },
+      {
+        question: "Peut-on répondre « non » à cette question ?",
+        choices: ["Oui", "Non", "Peut-être", "Je bugue"],
+        correct: "Non"
+      },
+      {
+        question: "Tu es dans une course. Tu doubles le 2ᵉ. Quelle place as-tu ?",
+        choices: ["1", "2", "3", "éliminé"],
+        correct: "2"
+      },
+      {
+        question: "Ce test est-il difficile ?",
+        choices: ["Oui", "Non", "Peut-être", "Ce n’est pas cette réponse"],
+        correct: "Ce n’est pas cette réponse"
+      },
+      {
+        question: "Cliquez sur le mot <span id='trick2' style='color: yellow; cursor: pointer;'>banane</span>.",
+        choices: ["Pomme", "Poire", "Raisin", "Cerise"],
+        correct: null,
+        trickId: "trick2"
+      },
+      {
+        question: "Le père de Paul a 4 fils : Enzo, Matteo, Lucas, et ?",
+        choices: ["Paul", "Enzo", "Matteo", "Lucas"],
+        correct: "Paul"
+      }
+    ];
+
+    let index = 0;
+    let score = 0;
+    let lives = 3;
+
+    const questionEl = document.getElementById('question');
+    const choicesEl = document.getElementById('choices');
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const statusEl = document.getElementById('status');
+    const feedbackImage = document.getElementById('feedbackImage');
+    const progressEl = document.getElementById('progress');
+
+    function updateDisplay() {
+      scoreEl.textContent = `Score : ${score}`;
+      livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+      progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
+    }
+
+    function showQuestion() {
+      if (index >= questions.length) {
+        alert("Bravo ! Tu as terminé le niveau.");
+        window.location.href = 'home_page.html';
+        return;
+      }
+
+      updateDisplay();
+      const q = questions[index];
+      statusEl.textContent = '';
+      choicesEl.innerHTML = '';
+      feedbackImage.style.display = 'none';
+
+      questionEl.innerHTML = q.question;
+
+      if (q.trickId) {
+        document.getElementById(q.trickId).onclick = () => handleAnswer(true);
+      }
+
+      q.choices.forEach(choice => {
+        const btn = document.createElement('div');
+        btn.className = 'choice';
+        btn.textContent = choice;
+        btn.onclick = () => handleAnswer(choice === q.correct);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(correct) {
+      feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+      feedbackImage.style.display = 'block';
+
+      if (correct) {
+        score++;
+        statusEl.textContent = "Bonne réponse !";
+        index++;
+      } else {
+        lives--;
+        statusEl.textContent = "NOPE !";
+        updateDisplay();
+      }
+
+      setTimeout(() => {
+        feedbackImage.style.display = 'none';
+        if (lives <= 0) {
+          alert("Game Over !");
+          window.location.href = 'home_page.html';
+        } else {
+          showQuestion();
+        }
+      }, 2500);
+    }
+
+    const preloadImages = () => {
+      const imgs = ['correct.png', 'wrong.png'];
+      imgs.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
+    preloadImages();
+    showQuestion();
+  </script>
+</body>
+</html>
