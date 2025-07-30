@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -232,4 +233,240 @@ const level3Questions = [
     showQuestion();
   </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nope Quiz - Niveau 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: 300%;
+      font-family: 'MedievalSharp', cursive;
+      color: #fff6dd;
+      text-align: center;
+    }
+
+    .container {
+      padding: 30px;
+    }
+    .question {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 4px black;
+    }
+    .choice {
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .choice:hover {
+      background-color: #704c2b;
+    }
+    .status {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+#feedbackImage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 999;
+  display: none;
+}
+
+.question-progress {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #ffddaa;
+}
+
+    .menu-button {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.menu-button a {
+  text-decoration: none;
+  background-color: #5c3b1e;
+  color: #fff6dd;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.menu-button a:hover {
+  background-color: #704c2b;
+}
+
+  </style>
+</head>
+<body>
+            <!-- Bouton Retour Menu -->
+    <div class="menu-button">
+    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
+    </div>
+  <div class="container">
+    <div id="lives"></div>
+    <div id="score"></div>
+    <div id="progress" class="question-progress"></div>
+    <h2 class="question" id="question"></h2>
+    <div id="choices"></div>
+    <img id="feedbackImage" src="" alt="Feedback">
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+const level3Questions = [
+  {
+    question: "Qui a peint la Joconde ?",
+    choices: ["Léonardo DiCaprio", "Léonard de Vinci", "Mon cousin Kevin", "Une IA très motivée"],
+    correct: "Léonard de Vinci"
+  },
+  {
+    question: "Quel est le pays le plus peuplé au monde ?",
+    choices: ["La Chine", "L’Inde", "Le serveur de Minecraft", "Mon appart en soirée"],
+    correct: "L’Inde"
+  },
+  {
+    question: "Quelle est la capitale de l’Australie ?",
+    choices: ["Sydney", "Melbourne", "Canberra", "Koalaville"],
+    correct: "Canberra"
+  },
+  {
+    question: "Combien de tentacules a une pieuvre ?",
+    choices: ["8", "7.5", "Ça dépend de son humeur", "Un nombre pair variable"],
+    correct: "8"
+  },
+  {
+    question: "Qui a découvert l’Amérique ?",
+    choices: ["Christophe Colomb", "Un GPS en panne", "Les Vikings", "Amérigo Vespoucci dans ses rêves"],
+    correct: "Christophe Colomb"
+  },
+  {
+    question: "Quel est l’ingrédient principal du guacamole ?",
+    choices: ["L’avocat", "Le kiwi écrasé", "Le slime vert", "Une décision mûre"],
+    correct: "L’avocat"
+  },
+  {
+    question: "Quel animal est le roi de la savane ?",
+    choices: ["Le lion", "Simba", "Roi Julian", "La girafe mais elle se cache"],
+    correct: "Le lion"
+  },
+  {
+    question: "Combien de planètes dans le système solaire ?",
+    choices: ["8", "9 (Pluton est une diva)", "7 et demi", "Toutes sauf la Terre, on se barre"],
+    correct: "8"
+  },
+  {
+    question: "Qui a écrit *Roméo et Juliette* ?",
+    choices: ["Shakespeare", "Roméo lui-même", "Cyrano de Bergerac", "Juliette pendant les pubs"],
+    correct: "Shakespeare"
+  },
+  {
+    question: "Combien y a-t-il de continents ?",
+    choices: ["7", "6 et demi", "4 (selon Flat Earth Inc.)", "Une bonne dizaine si t'es bourré"],
+    correct: "7"
+  }
+];
+
+
+
+    let index = 0;
+    let score = parseInt(localStorage.getItem('score')) || 0;
+    let lives = parseInt(localStorage.getItem('lives')) || 3;
+
+    const questionEl = document.getElementById('question');
+    const choicesEl = document.getElementById('choices');
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const statusEl = document.getElementById('status');
+    const feedbackImage = document.getElementById('feedbackImage');
+
+    function updateDisplay() {
+      scoreEl.textContent = `Score : ${score}`;
+      livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+    }
+
+      function showQuestion() {
+        if (index >= level3Questions.length) {
+          alert("Bravo ! Tu as terminé le niveau 3.");
+          window.location.href = 'home_page.html';
+          return;
+        }
+
+        updateDisplay();
+        const q = level3Questions[index];
+        questionEl.textContent = q.question;
+        choicesEl.innerHTML = '';
+        feedbackImage.style.display = 'none';
+        statusEl.textContent = '';
+
+        // Ajout du compteur de progression
+        document.getElementById('progress').textContent = `Question ${index + 1} / ${level3Questions.length}`;
+
+        q.choices.forEach(choice => {
+          const btn = document.createElement('div');
+          btn.className = 'choice';
+          btn.textContent = choice;
+          btn.onclick = () => handleAnswer(choice === q.correct);
+          choicesEl.appendChild(btn);
+        });
+      }
+
+    function handleAnswer(correct) {
+      feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+      feedbackImage.style.display = 'block';
+
+      if (correct) {
+        score++;
+        statusEl.textContent = "Bonne réponse !";
+        index++;
+      } else {
+        lives--;
+        statusEl.textContent = "NOPE !";
+        updateDisplay();
+      }
+
+      setTimeout(() => {
+        feedbackImage.style.display = 'none';
+
+        if (lives <= 0) {
+          alert("Game Over !");
+          window.location.href = 'home_page.html';
+        } else {
+          showQuestion();
+        }
+      }, 3000);
+    }
+
+    const preloadImages = () => {
+      const imgs = ['correct.png', 'wrong.png'];
+      imgs.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    };
+    preloadImages();
+
+    showQuestion();
+  </script>
+</body>
+>>>>>>> f0c53244556d4740e579997187e6ed07aa554437
 </html>
