@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nope Quiz - Royaume</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('assets/images/medieval_bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'MedievalSharp', cursive;
+      color: #f7e6b5;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      backdrop-filter: brightness(0.8);
+    }
+    h1 {
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 5px #000;
+    }
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      border: none;
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .btn:hover {
+      background-color: #704c2b;
+      transform: scale(1.05);
+    }
+    .overlay-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 100;
+}
+
+  </style>
+</head>
+<body>
+  <img src="doigt.png" alt="Doigt" class="overlay-image">
+  <div class="container">
+    <h1>Bienvenue dans mon royaumme</h1>
+    <h2>Choisis ton épreuve :</h2>
+    <button class="btn" onclick="startLevel(1)">Maths de CE1</button>
+    <button class="btn" onclick="startLevel(2)">Maths de CE2</button>
+    <button class="btn" onclick="startLevel(3)">CULture G</button>
+    <button class="btn" onclick="startLevel(4)">Logique absurde</button>
+    <button class="btn" onclick="startLevel(5)">Attention aux pièges</button>
+    <button class="btn" onclick="startLevel(6)">Tennis</button>
+  </div>
+
+  <script>
+    function startLevel(level) {
+      localStorage.setItem('score', 0);
+      localStorage.setItem('lives', 3);
+      localStorage.setItem('currentLevel', level);
+      window.location.href = `niveau${level}.html`;
+    }
+  </script>
+</body>
+</html>
