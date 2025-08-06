@@ -19,11 +19,13 @@
     .container {
       padding: 30px;
     }
+
     .question {
       font-size: 1.5rem;
       margin-bottom: 30px;
       text-shadow: 1px 1px 4px black;
     }
+
     .choice {
       background-color: #5c3b1e;
       color: #fff6dd;
@@ -33,9 +35,11 @@
       cursor: pointer;
       transition: background 0.2s;
     }
+
     .choice:hover {
       background-color: #704c2b;
     }
+
     .status {
       margin-top: 20px;
       font-size: 1.2rem;
@@ -50,11 +54,6 @@
       object-fit: cover;
       z-index: 999;
       display: none;
-    }
-
-    .math-font {
-      font-family: 'Courier New', monospace;
-      letter-spacing: 0.5px;
     }
 
     .math-clear {
@@ -94,6 +93,7 @@
   <div class="menu-button">
     <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
   </div>
+
   <div class="container">
     <div id="lives"></div>
     <div id="score"></div>
@@ -183,11 +183,10 @@
 
       updateDisplay();
       const q = level1Questions[index];
-      questionEl.innerHTML = q.question; // Remplace textContent par innerHTML
+      questionEl.innerHTML = q.question;
       choicesEl.innerHTML = '';
       feedbackImage.style.display = 'none';
       statusEl.textContent = '';
-
       document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
 
       q.choices.forEach(choice => {
@@ -200,7 +199,11 @@
     }
 
     function handleAnswer(correct) {
-      feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+      if (correct && index === 0) {
+        feedbackImage.src = '!.png';
+      } else {
+        feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+      }
       feedbackImage.style.display = 'block';
 
       if (correct) {
@@ -226,7 +229,7 @@
     }
 
     const preloadImages = () => {
-      const imgs = ['correct.png', 'wrong.png'];
+      const imgs = ['correct.png', 'wrong.png', '!.png'];
       imgs.forEach(src => {
         const img = new Image();
         img.src = src;
