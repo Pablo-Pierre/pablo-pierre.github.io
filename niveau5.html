@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="google-adsense-account" content="ca-pub-7651361498473024">
-  <title>Nope Quiz – Niveau Paradoxes</title>
-  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="google-adsense-account" content="ca-pub-7651361498473024" />
+  <title>Niveau Paradoxes</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
     body {
       margin: 0;
       padding: 0;
       background: url('background.jpg') no-repeat center center fixed;
-      background-size: 300%;
+      background-size: cover;
       font-family: 'MedievalSharp', cursive;
       color: #fff6dd;
       text-align: center;
     }
-
     .container {
       padding: 30px;
     }
@@ -37,6 +37,7 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
+      user-select: none;
     }
     .choice:hover {
       background-color: #704c2b;
@@ -54,184 +55,239 @@
       object-fit: cover;
       z-index: 999;
       display: none;
+      pointer-events: none;
     }
-
-        .menu-button {
-  position: fixed;
-  top: 15px;
-  right: 20px;
-  z-index: 1000;
-}
-
-.menu-button a {
-  text-decoration: none;
-  background-color: #5c3b1e;
-  color: #fff6dd;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 0.95rem;
-  transition: background-color 0.2s;
-}
-
-.menu-button a:hover {
-  background-color: #704c2b;
-}
-
+    .menu-button {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .menu-button a {
+      text-decoration: none;
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      transition: background-color 0.2s;
+    }
+    .menu-button a:hover {
+      background-color: #704c2b;
+    }
   </style>
 </head>
 <body>
-          <!-- Bouton Retour Menu -->
-    <div class="menu-button">
+  <!-- Bouton Retour Menu -->
+  <div class="menu-button">
     <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
-    </div>
+  </div>
   <div class="container">
     <div id="lives"></div>
     <div id="score"></div>
     <div id="progress" class="question-progress"></div>
     <h2 class="question" id="question"></h2>
     <div id="choices"></div>
-    <img id="feedbackImage" src="" alt="Feedback">
+    <img id="feedbackImage" src="" alt="Feedback" />
     <div class="status" id="status"></div>
   </div>
 
-  <script>
-    const questions = [
-      {
-        question: "Trouvez l’<span id='trick1' style='color: red; cursor: pointer;'>errreur</span> dans cette phrase.",
-        choices: ["La grammaire", "La ponctuation", "Il manque un mot", "Elle est parfaite"],
-        correct: null,
-        trickId: "trick1"
-      },
-      {
-        question: "La réponse à cette question est D.",
-        choices: ["A", "B", "C", "D"],
-        correct: "D"
-      },
-      {
-        question: "Quel mot devient plus court quand on lui ajoute deux lettres ?",
-        choices: ["Court", "Petit", "Long", "Court-circuit"],
-        correct: "Court"
-      },
-      {
-        question: "Un avion s’écrase à la frontière. Où enterre-t-on les survivants ?",
-        choices: ["France", "Espagne", "Frontière", "Nulle part"],
-        correct: "Nulle part"
-      },
-      {
-        question: 'Clique <span id="trick3" style="color: lightgreen; cursor: pointer;">ici</span> pour gagner.',
-        choices: ['Là', 'Là-bas', 'Pas ici', 'Nulle part'],
-        correct: null,
-        trickId: 'trick3'
-      },
-      {
-        question: "Peut-on répondre « non » à cette question ?",
-        choices: ["Oui", "Non", "Peut-être", "Je bugue"],
-        correct: "Non"
-      },
-      {
-        question: "Tu es dans une course. Tu doubles le 2ᵉ. Quelle place as-tu ?",
-        choices: ["1", "2", "3", "éliminé"],
-        correct: "2"
-      },
-      {
-        question: "Ce test est-il difficile ?",
-        choices: ["Oui", "Non", "Peut-être", "Ce n’est pas cette réponse"],
-        correct: "Ce n’est pas cette réponse"
-      },
-      {
-        question: "Cliquez sur le mot <span id='trick2' style='color: yellow; cursor: pointer;'>banane</span>.",
-        choices: ["Pomme", "Poire", "Raisin", "Cerise"],
-        correct: null,
-        trickId: "trick2"
-      },
-      {
-        question: "Le père de Paul a 4 fils : Enzo, Matteo, Lucas, et ?",
-        choices: ["Paul", "Enzo", "Matteo", "Lucas"],
-        correct: "Paul"
-      }
-    ];
+<script>
+  const supabase = window.supabase.createClient(
+    "https://rajtryxpmoskqeoylgmd.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw"
+  );
 
-    let index = 0;
-    let score = 0;
-    let lives = 3;
+  const questions = [
+    {
+      question: "Trouvez l’<span id='trick1' style='color: red; cursor: pointer;'>errreur</span> dans cette phrase.",
+      choices: ["La grammaire", "La ponctuation", "Il manque un mot", "Elle est parfaite"],
+      correct: null,
+      trickId: "trick1"
+    },
+    {
+      question: "La réponse à cette question est D.",
+      choices: ["A", "B", "C", "D"],
+      correct: "D"
+    },
+    {
+      question: "Quel mot devient plus court quand on lui ajoute deux lettres ?",
+      choices: ["Court", "Petit", "Long", "Court-circuit"],
+      correct: "Court"
+    },
+    {
+      question: "Un avion s’écrase à la frontière. Où enterre-t-on les survivants ?",
+      choices: ["France", "Espagne", "Frontière", "Nulle part"],
+      correct: "Nulle part"
+    },
+    {
+      question: 'Clique <span id="trick3" style="color: lightgreen; cursor: pointer;">ici</span> pour gagner.',
+      choices: ['Là', 'Là-bas', 'Pas ici', 'Nulle part'],
+      correct: null,
+      trickId: 'trick3'
+    },
+    {
+      question: "Peut-on répondre « non » à cette question ?",
+      choices: ["Oui", "Non", "Peut-être", "Je bugue"],
+      correct: "Non"
+    },
+    {
+      question: "Tu es dans une course. Tu doubles le 2ᵉ. Quelle place as-tu ?",
+      choices: ["1", "2", "3", "éliminé"],
+      correct: "2"
+    },
+    {
+      question: "Ce test est-il difficile ?",
+      choices: ["Oui", "Non", "Peut-être", "Ce n’est pas cette réponse"],
+      correct: "Ce n’est pas cette réponse"
+    },
+    {
+      question: "Cliquez sur le mot <span id='trick2' style='color: yellow; cursor: pointer;'>banane</span>.",
+      choices: ["Pomme", "Poire", "Raisin", "Cerise"],
+      correct: null,
+      trickId: "trick2"
+    },
+    {
+      question: "Le père de Paul a 4 fils : Enzo, Matteo, Lucas, et ?",
+      choices: ["Paul", "Enzo", "Matteo", "Lucas"],
+      correct: "Paul"
+    }
+  ];
 
-    const questionEl = document.getElementById('question');
-    const choicesEl = document.getElementById('choices');
-    const scoreEl = document.getElementById('score');
-    const livesEl = document.getElementById('lives');
-    const statusEl = document.getElementById('status');
-    const feedbackImage = document.getElementById('feedbackImage');
-    const progressEl = document.getElementById('progress');
+  let index = 0;
+  let score = 0;
+  let lives = 3;
 
-    function updateDisplay() {
-      scoreEl.textContent = `Score : ${score}`;
-      livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
-      progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
+  const questionEl = document.getElementById('question');
+  const choicesEl = document.getElementById('choices');
+  const scoreEl = document.getElementById('score');
+  const livesEl = document.getElementById('lives');
+  const statusEl = document.getElementById('status');
+  const feedbackImage = document.getElementById('feedbackImage');
+  const progressEl = document.getElementById('progress');
+
+  function updateDisplay() {
+    scoreEl.textContent = `Score : ${score}`;
+    livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+    progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
+  }
+
+  function showQuestion() {
+    if (index >= questions.length) {
+      updateProgression();
+      return;
     }
 
-    function showQuestion() {
-      if (index >= questions.length) {
-        alert("Bravo ! Tu as terminé le niveau.");
+    updateDisplay();
+    const q = questions[index];
+    statusEl.textContent = '';
+    choicesEl.innerHTML = '';
+    feedbackImage.style.display = 'none';
+    questionEl.innerHTML = q.question;
+
+    if (q.trickId) {
+      setTimeout(() => {
+        const trick = document.getElementById(q.trickId);
+        if (trick) {
+          trick.onclick = () => handleAnswer(true);
+        }
+      }, 10);
+    }
+
+    q.choices.forEach(choice => {
+      const btn = document.createElement('div');
+      btn.className = 'choice';
+      btn.textContent = choice;
+      btn.onclick = () => handleAnswer(choice === q.correct);
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(correct) {
+    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+    feedbackImage.style.display = 'block';
+
+    if (correct) {
+      score++;
+      statusEl.textContent = "Bonne réponse !";
+      index++;
+    } else {
+      lives--;
+      statusEl.textContent = "NOPE !";
+      updateDisplay();
+    }
+
+    setTimeout(() => {
+      feedbackImage.style.display = 'none';
+
+      if (lives <= 0) {
+        alert("Game Over !");
         window.location.href = 'home_page.html';
         return;
       }
 
-      updateDisplay();
-      const q = questions[index];
-      statusEl.textContent = '';
-      choicesEl.innerHTML = '';
-      feedbackImage.style.display = 'none';
+      showQuestion();
+    }, 2500);
+  }
 
-      questionEl.innerHTML = q.question;
+  async function updateProgression() {
+    const user_id = localStorage.getItem('user_id');
+    const newLevel = 6;
 
-      if (q.trickId) {
-        document.getElementById(q.trickId).onclick = () => handleAnswer(true);
+    if (user_id) {
+      const { data, error } = await supabase
+        .from('progressions')
+        .select('level')
+        .eq('user_id', user_id)
+        .single();
+
+      if (!error && data && data.level < newLevel) {
+        await supabase
+          .from('progressions')
+          .update({ level: newLevel })
+          .eq('user_id', user_id);
       }
-
-      q.choices.forEach(choice => {
-        const btn = document.createElement('div');
-        btn.className = 'choice';
-        btn.textContent = choice;
-        btn.onclick = () => handleAnswer(choice === q.correct);
-        choicesEl.appendChild(btn);
-      });
     }
 
-    function handleAnswer(correct) {
-      feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
-      feedbackImage.style.display = 'block';
+    localStorage.setItem('currentLevel', newLevel);
+    alert("Bravo ! Tu as terminé le niveau Paradoxes !");
+    window.location.href = 'home_page.html';
+  }
 
-      if (correct) {
-        score++;
-        statusEl.textContent = "Bonne réponse !";
-        index++;
-      } else {
-        lives--;
-        statusEl.textContent = "NOPE !";
-        updateDisplay();
-      }
+  const preloadImages = () => {
+    ['correct.png', 'wrong.png'].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  };
+  preloadImages();
 
-      setTimeout(() => {
-        feedbackImage.style.display = 'none';
-        if (lives <= 0) {
-          alert("Game Over !");
-          window.location.href = 'home_page.html';
-        } else {
-          showQuestion();
-        }
-      }, 2500);
+  (async () => {
+    const user_id = localStorage.getItem("user_id");
+    if (!user_id) {
+      window.location.href = "login.html";
+      return;
     }
 
-    const preloadImages = () => {
-      const imgs = ['correct.png', 'wrong.png'];
-      imgs.forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
-    };
-    preloadImages();
+    const { data, error } = await supabase
+      .from("progressions")
+      .select("level")
+      .eq("user_id", user_id)
+      .single();
+
+    const currentUnlockedLevel = data?.level || 1;
+    const thisLevel = 6;
+
+    if (thisLevel > currentUnlockedLevel + 1) {
+      alert("Tu n'as pas encore débloqué ce niveau !");
+      window.location.href = "home_page.html";
+      return;
+    }
+
     showQuestion();
-  </script>
+  })();
+</script>
+
 </body>
 </html>

@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="google-adsense-account" content="ca-pub-7651361498473024">
-  <title>Nope Quiz - Royaume</title>
+  <title>Royaume</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: url('assets/images/medieval_bg.jpg') no-repeat center center fixed;
+      background: url('/background.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: 'MedievalSharp', cursive;
       color: #f7e6b5;
       text-align: center;
     }
+
     .container {
       display: flex;
       flex-direction: column;
@@ -24,14 +26,17 @@
       padding: 20px;
       backdrop-filter: brightness(0.8);
     }
+
     h1 {
       font-size: 2.5rem;
       text-shadow: 2px 2px 5px #000;
     }
+
     h2 {
       font-size: 1.5rem;
       margin-bottom: 2rem;
     }
+
     .btn {
       background-color: #5c3b1e;
       color: #fff6dd;
@@ -43,45 +48,111 @@
       cursor: pointer;
       transition: transform 0.2s;
     }
+
     .btn:hover {
       background-color: #704c2b;
       transform: scale(1.05);
     }
-    .overlay-image {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: contain;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 100;
-}
 
+    .btn.locked {
+      background-color: #999;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .overlay-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
   <img src="doigt.png" alt="Doigt" class="overlay-image">
   <div class="container">
-    <h1>Bienvenue dans mon royaumme</h1>
+    <h1>Bienvenue dans mon royaume</h1>
     <h2>Choisis ton épreuve :</h2>
-    <button class="btn" onclick="startLevel(1)">Maths de CE1</button>
-    <button class="btn" onclick="startLevel(2)">Maths de CE2</button>
-    <button class="btn" onclick="startLevel(3)">CULture G</button>
-    <button class="btn" onclick="startLevel(4)">Logique absurde</button>
-    <button class="btn" onclick="startLevel(5)">Attention aux pièges</button>
-    <button class="btn" onclick="startLevel(6)">Tennis</button>
+    <div id="level-buttons"></div>
   </div>
 
   <script>
+    const supabase = window.supabase.createClient(
+      'https://rajtrxypmoskqeoylgmd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw'
+    );
+
+    const levelNames = [
+      "", // index 0 inutilisé
+      "Maths de CE1",
+      "Maths de CE2",
+      "CULture G",
+      "Logique absurde",
+      "Attention aux pièges",
+      "Tennis"
+    ];
+
+    async function getLevelUnlocked() {
+      // Vérifie l'utilisateur connecté
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        console.warn("Pas d'utilisateur connecté. Redirection...");
+        window.location.href = "auth.html";
+        return;
+      }
+
+      const user_id = user.id;
+      localStorage.setItem("user_id", user_id);
+
+      // Récupération de la progression depuis Supabase
+      const { data, error } = await supabase
+        .from("progressions")
+        .select("level")
+        .eq("user_id", user_id)
+        .single();
+
+      if (error || !data) {
+        console.warn("Aucune progression trouvée, défaut niveau 1.");
+        return 1;
+      }
+
+      return data.level;
+    }
+
+    function createButtons(levelUnlocked) {
+      const container = document.getElementById("level-buttons");
+      container.innerHTML = "";
+
+      for (let i = 1; i <= 6; i++) {
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.textContent = levelNames[i];
+
+        if (i <= levelUnlocked) {
+          btn.onclick = () => startLevel(i);
+        } else {
+          btn.classList.add("locked");
+          btn.onclick = () => alert("Termine les niveaux précédents pour débloquer celui-ci !");
+        }
+
+        container.appendChild(btn);
+      }
+    }
+
     function startLevel(level) {
-      localStorage.setItem('score', 0);
-      localStorage.setItem('lives', 3);
-      localStorage.setItem('currentLevel', level);
+      localStorage.setItem("score", 0);
+      localStorage.setItem("lives", 3);
+      localStorage.setItem("currentLevel", level);
       window.location.href = `niveau${level}.html`;
     }
+
+    getLevelUnlocked().then(createButtons);
   </script>
 </body>
 </html>
-

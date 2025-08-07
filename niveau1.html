@@ -2,15 +2,15 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="google-adsense-account" content="ca-pub-7651361498473024">
-  <title>Nope Quiz - Niveau 1</title>
+  <title>Niveau 1</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
     body {
       margin: 0;
       padding: 0;
       background: url('background.jpg') no-repeat center center fixed;
-      background-size: 300%;
+      background-size: cover;
       font-family: 'MedievalSharp', cursive;
       color: #fff6dd;
       text-align: center;
@@ -56,10 +56,6 @@
       display: none;
     }
 
-    .math-clear {
-      font-family: 'Courier New', monospace;
-    }
-
     .question-progress {
       font-size: 1.2rem;
       margin-bottom: 10px;
@@ -91,7 +87,7 @@
 </head>
 <body>
   <div class="menu-button">
-    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
+    <a href="home_page.html">🏰 Menu</a>
   </div>
 
   <div class="container">
@@ -105,11 +101,16 @@
   </div>
 
   <script>
+    const supabase = window.supabase.createClient(
+      'https://rajtrxypmoskqeoylgmd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw'
+    );
+
     const level1Questions = [
       {
-        question: `Combien fait 6 + 4 * 3<span class="math-clear">!</span>`,
+        question: `Combien fait 6 + 4 * 3 ?`,
         choices: ["30", "18", "J’ai arrêté les maths en 4e", "x"],
-        correct: "30"
+        correct: "18"
       },
       {
         question: "Quel est le résultat de (2 + 3)² ?",
@@ -176,8 +177,7 @@
 
     function showQuestion() {
       if (index >= level1Questions.length) {
-        alert("Bravo ! Tu as terminé le niveau 2.");
-        window.location.href = 'home_page.html';
+        updateProgression();
         return;
       }
 
@@ -199,11 +199,7 @@
     }
 
     function handleAnswer(correct) {
-      if (correct && index === 0) {
-        feedbackImage.src = '!.png';
-      } else {
-        feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
-      }
+      feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
       feedbackImage.style.display = 'block';
 
       if (correct) {
@@ -228,15 +224,34 @@
       }, 3000);
     }
 
-    const preloadImages = () => {
-      const imgs = ['correct.png', 'wrong.png', '!.png'];
-      imgs.forEach(src => {
+    async function updateProgression() {
+      const user_id = localStorage.getItem('user_id');
+      const newLevel = 2;
+
+      if (user_id) {
+        const { error } = await supabase
+          .from('progressions')
+          .update({ level: newLevel })
+          .eq('user_id', user_id);
+
+        if (error) {
+          console.error("Erreur lors de la mise à jour :", error.message);
+        }
+      }
+
+      localStorage.setItem('currentLevel', newLevel);
+      alert("Bravo ! Tu as terminé le niveau 1.");
+      window.location.href = 'home_page.html';
+    }
+
+    function preloadImages() {
+      ['correct.png', 'wrong.png'].forEach(src => {
         const img = new Image();
         img.src = src;
       });
-    };
-    preloadImages();
+    }
 
+    preloadImages();
     showQuestion();
   </script>
 </body>
