@@ -34,7 +34,7 @@
 
     h2 {
       font-size: 1.5rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
 
     .btn {
@@ -71,37 +71,48 @@
       z-index: 0;
       opacity: 1;
     }
+
     .mini-jeu-button {
-  position: fixed;
-  top: 15px;
-  right: 20px;
-  z-index: 1000;
-}
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 1000;
+    }
 
-.mini-jeu-button a {
-  text-decoration: none;
-  background-color: #5c3b1e;
-  color: #fff6dd;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
+    .mini-jeu-button a {
+      text-decoration: none;
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
 
-.mini-jeu-button a:hover {
-  background-color: #704c2b;
-}
+    .mini-jeu-button a:hover {
+      background-color: #704c2b;
+    }
 
+    ul#leaderboard {
+      list-style-type: none;
+      padding: 0;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="mini-jeu-button">
-  <a href="mini-jeu.html">🎮 Mini jeu</a>
-</div>
+      <a href="mini-jeu.html">🎮 Mini jeu</a>
+    </div>
 
     <h1>Bienvenue dans mon royaume</h1>
+
+    <h2>🏆 Top 3 mini-jeu :</h2>
+    <ul id="leaderboard"><li>Chargement...</li></ul>
+
     <h2>Choisis ton épreuve :</h2>
     <div id="level-buttons"></div>
   </div>
@@ -125,7 +136,6 @@
     ];
 
     async function getLevelUnlocked() {
-      // Vérifie l'utilisateur connecté
       const { data: { user }, error: userError } = await supabase.auth.getUser();
 
       if (userError || !user) {
@@ -137,7 +147,6 @@
       const user_id = user.id;
       localStorage.setItem("user_id", user_id);
 
-      // Récupération de la progression depuis Supabase
       const { data, error } = await supabase
         .from("progressions")
         .select("level")
@@ -179,7 +188,41 @@
       window.location.href = `niveau${level}.html`;
     }
 
+    async function loadLeaderboard() {
+      const { data, error } = await supabase
+        .from('progressions')
+        .select('pseudo, user_id, mini_jeu')
+        .order('mini_jeu', { ascending: false })
+        .limit(3);
+
+      const list = document.getElementById('leaderboard');
+      list.innerHTML = "";
+
+      if (error) {
+        console.error("Erreur leaderboard :", error.message);
+        list.innerHTML = "<li>Erreur de chargement</li>";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        list.innerHTML = "<li>Aucun score disponible</li>";
+        return;
+      }
+
+      data.forEach((player, index) => {
+        const name = player.pseudo && player.pseudo.trim() !== ""
+          ? player.pseudo
+          : (player.user_id?.substring(0, 6) || "Anonyme");
+
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${name} — ${player.mini_jeu ?? 0} pts`;
+        list.appendChild(li);
+      });
+    }
+
+    // Initialisation
     getLevelUnlocked().then(createButtons);
+    loadLeaderboard();
   </script>
 </body>
 </html>

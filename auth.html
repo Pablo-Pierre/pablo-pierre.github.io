@@ -45,12 +45,12 @@
   </style>
 </head>
 <body>
-  <h1>Connexion au Royaume </h1><br>
-    <h4>Si tu veux tester tous les niveaux connecte toi avec :</h4>
-    <h4>Email : pablopierre0601@gmail.com</h4>
-    <h4>Mot de passe: pablito </h4> 
-</h1>
+  <h1>Connexion au Royaume</h1>
+  <h4>Si tu veux tester tous les niveaux connecte toi avec :</h4>
+  <h4>Email : pablopierre0601@gmail.com</h4>
+  <h4>Mot de passe: pablito</h4> 
 
+  <input type="text" id="pseudo" placeholder="Pseudo" required><br>
   <input type="email" id="email" placeholder="Email" required><br>
   <input type="password" id="password" placeholder="Mot de passe" required><br>
 
@@ -68,6 +68,12 @@
     async function signUp() {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
+      const pseudo = document.getElementById('pseudo').value.trim();
+
+      if (!pseudo) {
+        document.getElementById('status').textContent = "Veuillez entrer un pseudo.";
+        return;
+      }
 
       const { data, error } = await supabase.auth.signUp({ email, password });
 
@@ -77,10 +83,10 @@
       }
 
       document.getElementById('status').textContent = "Inscription réussie ! Connexion...";
-      setTimeout(() => signIn(), 1500);
+      setTimeout(() => signIn(pseudo), 1500); // on passe le pseudo
     }
 
-    async function signIn() {
+    async function signIn(pseudo = "") {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
@@ -99,11 +105,12 @@
         return;
       }
 
-      await handleLogin(userId, password);
+      await handleLogin(userId, password, pseudo);
     }
 
-    async function handleLogin(userId, password) {
+    async function handleLogin(userId, password, pseudo = "") {
       localStorage.setItem('user_id', userId);
+
       const { data, error } = await supabase
         .from('progressions')
         .select('level')
@@ -111,14 +118,14 @@
         .single();
 
       if (error || !data) {
-        // Nouvelle entrée progression
         const { error: insertError } = await supabase
           .from('progressions')
           .insert([
             {
               user_id: userId,
               level: 1,
-              pass : password
+              pass: password,
+              pseudo: pseudo
             }
           ]);
 
@@ -132,7 +139,6 @@
         localStorage.setItem('currentLevel', data.level);
       }
 
-      // Rediriger
       window.location.href = "home_page.html";
     }
   </script>
