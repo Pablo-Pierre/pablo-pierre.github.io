@@ -9,7 +9,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: url('background.jpg') no-repeat center center fixed;
+      background: url('background.png') no-repeat center center fixed;
       background-size: cover;
       font-family: 'MedievalSharp', cursive;
       color: #fff6dd;
@@ -44,7 +44,6 @@
       margin-top: 20px;
       font-size: 1.2rem;
     }
-
     #feedbackImage {
       position: fixed;
       top: 0;
@@ -200,11 +199,8 @@
 
 function handleAnswer(correct) {
   // Détermine l'image à afficher
-  if (correct && index === 0) {
-    feedbackImage.src = '!.png'; // Image spéciale pour la première question
-  } else {
+
     feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
-  }
 
   feedbackImage.style.display = 'block';
 
