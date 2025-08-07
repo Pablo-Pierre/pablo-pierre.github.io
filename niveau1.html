@@ -2,8 +2,9 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Niveau Blagues</title>
+  <title>Niveau 1</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -20,33 +21,29 @@
     }
 
     .question {
-      font-size: 1.6rem;
-      margin-bottom: 20px;
+      font-size: 1.5rem;
+      margin-bottom: 30px;
       text-shadow: 1px 1px 4px black;
     }
 
-    input {
-      padding: 10px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      border: none;
-      text-align: center;
-      width: 250px;
-      margin-bottom: 10px;
+    .choice {
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .hint {
-      font-size: 1.4rem;
-      margin: 10px 0;
-      letter-spacing: 4px;
-      color: #ffddaa;
+    .choice:hover {
+      background-color: #704c2b;
     }
 
     .status {
-      margin-top: 15px;
-      font-size: 1.3rem;
+      margin-top: 20px;
+      font-size: 1.2rem;
     }
-
     #feedbackImage {
       position: fixed;
       top: 0;
@@ -79,6 +76,7 @@
       border-radius: 8px;
       font-weight: bold;
       font-size: 0.95rem;
+      transition: background-color 0.2s;
     }
 
     .menu-button a:hover {
@@ -96,24 +94,68 @@
     <div id="score"></div>
     <div id="progress" class="question-progress"></div>
     <h2 class="question" id="question"></h2>
-    <div class="hint" id="hint"></div>
-    <input type="text" id="answerInput" placeholder="Tape ta réponse ici" />
-    <div class="status" id="status"></div>
+    <div id="choices"></div>
     <img id="feedbackImage" src="" alt="Feedback">
+    <div class="status" id="status"></div>
   </div>
 
   <script>
-    const blagues = [
-      { question: "Quel est le cousin russe d’Ivan ?", answer: "yvan dushit", hint: "Y___ D____t" },
-      { question: "Quel est celui qui est toujours à la traîne ?", answer: "jean kul", hint: "J___ K__" },
-      { question: "Qui porte tout sur son dos ?", answer: "bill houte", hint: "B___ H____" },
-      { question: "Qui oublie de tirer la chasse ?", answer: "imad waté", hint: "I___ W___" },
-      { question: "Qui arrive quand on s’y attend pas ?", answer: "homer dalors", hint: "H____ D_____" },
-      { question: "Qui est toujours vexé ?", answer: "gérard menvussa", hint: "G_____ M_______" },
-      { question: "Qui se mêle de tout ?", answer: "pacome toulmonde", hint: "P_____ T________" },
-      { question: "Qui cuisine avec des herbes ?", answer: "vincent thyme", hint: "V______ T____" },
-      { question: "Qui ne boit que de l’eau ?", answer: "jd népi", hint: "J_ ____" },
-      { question: "Qui est introuvable ?", answer: "james ussé", hint: "J____ U___" }
+    const supabase = window.supabase.createClient(
+      'https://rajtrxypmoskqeoylgmd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw'
+    );
+
+    const level1Questions = [
+      {
+        question: "Combien fait 6 + 4 * 3 <span style=\"font-family: Arial, sans-serif;\">!</span>",
+        choices: ["30", "18", "J’ai arrêté les maths en 4e", "x"],
+        correct: "30"
+      },
+      {
+        question: "Quel est le résultat de (2 + 3)² ?",
+        choices: ["25", "10", "Erreur de parenthèses", "2 + 9 = 11"],
+        correct: "25"
+      },
+      {
+        question: "Combien font 10 - 2 * 5 ?",
+        choices: ["0", "40", "Impossible", "8"],
+        correct: "0"
+      },
+      {
+        question: "Combien de zéros dans 1000 x 1000 ?",
+        choices: ["6", "3", "4", "J’ai paniqué"],
+        correct: "6"
+      },
+      {
+        question: "Combien vaut 0,1 + 0,2 ?",
+        choices: ["0.3", "0.30000000000000004", "3", "Ça dépend de la calculette"],
+        correct: "0.30000000000000004"
+      },
+      {
+        question: "Que donne √(16) + √(9) ?",
+        choices: ["7", "25", "4 + 3", "Racine carrée, c’est du jardinage ?"],
+        correct: "7"
+      },
+      {
+        question: "Combien fait 2^3^2 ?",
+        choices: ["512", "64", "16", "Erreur d’exposant"],
+        correct: "512"
+      },
+      {
+        question: "Si x = 5, combien vaut x² + 2x + 1 ?",
+        choices: ["36", "25", "Impossible sans calculatrice", "x"],
+        correct: "36"
+      },
+      {
+        question: "Une demi-baguette coûte 50 centimes. Combien coûtent 3 baguettes entières ?",
+        choices: ["3 €", "1,50 €", "75 centimes", "3 demi-baguettes"],
+        correct: "3 €"
+      },
+      {
+        question: "Combien font (10 + 2) / (3 * 2) ?",
+        choices: ["2", "4", "12/6", "J’ai vu des parenthèses, j’ai fui"],
+        correct: "2"
+      }
     ];
 
     let index = 0;
@@ -121,13 +163,11 @@
     let lives = parseInt(localStorage.getItem('lives')) || 3;
 
     const questionEl = document.getElementById('question');
-    const hintEl = document.getElementById('hint');
-    const answerInput = document.getElementById('answerInput');
-    const statusEl = document.getElementById('status');
-    const feedbackImage = document.getElementById('feedbackImage');
+    const choicesEl = document.getElementById('choices');
     const scoreEl = document.getElementById('score');
     const livesEl = document.getElementById('lives');
-    const progressEl = document.getElementById('progress');
+    const statusEl = document.getElementById('status');
+    const feedbackImage = document.getElementById('feedbackImage');
 
     function updateDisplay() {
       scoreEl.textContent = `Score : ${score}`;
@@ -135,75 +175,86 @@
     }
 
     function showQuestion() {
-      if (index >= blagues.length) {
-        return finishLevel();
+      if (index >= level1Questions.length) {
+        updateProgression();
+        return;
       }
 
       updateDisplay();
-      const q = blagues[index];
-      questionEl.textContent = q.question;
-      hintEl.textContent = q.hint;
-      progressEl.textContent = `Question ${index + 1} / ${blagues.length}`;
-      answerInput.value = "";
-      answerInput.focus();
-      statusEl.textContent = "";
+      const q = level1Questions[index];
+      questionEl.innerHTML = q.question;
+      choicesEl.innerHTML = '';
+      feedbackImage.style.display = 'none';
+      statusEl.textContent = '';
+      document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
+
+      q.choices.forEach(choice => {
+        const btn = document.createElement('div');
+        btn.className = 'choice';
+        btn.textContent = choice;
+        btn.onclick = () => handleAnswer(choice === q.correct);
+        choicesEl.appendChild(btn);
+      });
     }
 
-    function handleAnswer(e) {
-      if (e.key === 'Enter') {
-        const userAnswer = answerInput.value.trim().toLowerCase();
-        const correctAnswer = blagues[index].answer;
+function handleAnswer(correct) {
+  // Détermine l'image à afficher
 
-        if (userAnswer === correctAnswer) {
-          score++;
-          statusEl.textContent = "Bonne réponse !";
-          feedbackImage.src = 'correct.png';
-          index++;
-        } else {
-          lives--;
-          statusEl.textContent = "NOPE !";
-          feedbackImage.src = 'wrong.png';
-        }
+    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
 
-        feedbackImage.style.display = 'block';
-        updateDisplay();
+  feedbackImage.style.display = 'block';
 
-        setTimeout(() => {
-          feedbackImage.style.display = 'none';
+  if (correct) {
+    score++;
+    statusEl.textContent = "Bonne réponse !";
+    index++;
+  } else {
+    lives--;
+    statusEl.textContent = "NOPE !";
+    updateDisplay();
+  }
 
-          if (lives <= 0) {
-            alert("Game Over !");
-            localStorage.setItem('lives', 3);
-            window.location.href = 'home_page.html';
-          } else {
-            showQuestion();
-          }
-        }, 2000);
-      }
+  setTimeout(() => {
+    feedbackImage.style.display = 'none';
+
+    if (lives <= 0) {
+      alert("Game Over !");
+      window.location.href = 'home_page.html';
+    } else {
+      showQuestion();
     }
+  }, 3000);
+}
 
-    async function finishLevel() {
+
+    async function updateProgression() {
       const user_id = localStorage.getItem('user_id');
-      const newLevel = 4;
+      const newLevel = 2;
 
       if (user_id) {
-        const { error } = await window.supabase
+        const { error } = await supabase
           .from('progressions')
           .update({ level: newLevel })
           .eq('user_id', user_id);
 
         if (error) {
-          console.error("Erreur progression :", error.message);
+          console.error("Erreur lors de la mise à jour :", error.message);
         }
       }
 
       localStorage.setItem('currentLevel', newLevel);
-      alert("Bravo ! Tu as terminé le niveau blague !");
+      alert("Bravo ! Tu as terminé le niveau 1.");
       window.location.href = 'home_page.html';
     }
 
-    answerInput.addEventListener('keypress', handleAnswer);
+    function preloadImages() {
+      ['correct.png', 'wrong.png'].forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
 
+    preloadImages();
     showQuestion();
   </script>
 </body>
