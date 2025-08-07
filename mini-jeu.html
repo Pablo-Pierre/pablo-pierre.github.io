@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini-jeu : Paddle Ball</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    #gameCanvas {
+      display: block;
+      background-color: #222;
+      border: 2px solid #fff;
+    }
+    #countdown {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 5rem;
+      font-weight: bold;
+      z-index: 2;
+    }
+    #scoreBoard {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="scoreBoard">
+    <div>Score : <span id="score">0</span></div>
+    <div>Meilleur Score : <span id="highScore">0</span></div>
+  </div>
+  <div id="canvasContainer" class="d-flex justify-content-center align-items-center">
+    <canvas id="gameCanvas"></canvas>
+  </div>
+  <div id="countdown"></div>
+
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://rajtrxypmoskqeoylgmd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw'
+    );
+
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = Math.min(window.innerWidth, 800);
+      canvas.height = Math.min(window.innerHeight, 600);
+      paddle.y = canvas.height - 30;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    const paddle = {
+      width: 100,
+      height: 10,
+      x: 0,
+      y: 0,
+      color: "#fff"
+    };
+
+    const ball = {
+      x: 100,
+      y: 100,
+      radius: 10,
+      dx: 3,
+      dy: -3,
+      speedIncrease: 0.02 // ↩️ plus lentement
+    };
+
+    let score = 0;
+    let highScore = 0;
+    let animationFrame;
+    let gameStarted = false;
+    let lastHit = false;
+
+    async function fetchHighScore() {
+      const user_id = localStorage.getItem('user_id');
+      if (!user_id) return;
+      const { data, error } = await supabase.from('progressions').select('mini_jeu').eq('user_id', user_id).single();
+      if (!error && data) {
+        highScore = data.mini_jeu || 0;
+        document.getElementById("highScore").textContent = highScore;
+      }
+    }
+
+    async function updateHighScore(newScore) {
+      const user_id = localStorage.getItem('user_id');
+      if (!user_id) return;
+      const { error } = await supabase.from('progressions').update({ mini_jeu: newScore }).eq('user_id', user_id);
+      if (error) console.error("Erreur update:", error);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw paddle
+      ctx.fillStyle = paddle.color;
+      ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+
+      // Draw ball
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#f00";
+      ctx.fill();
+      ctx.closePath();
+
+      // Move ball
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      // Wall collision
+      if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+        ball.dx = -ball.dx;
+      }
+      if (ball.y - ball.radius < 0) {
+        ball.dy = -ball.dy;
+      }
+
+      // Paddle collision
+      if (
+        ball.y + ball.radius >= paddle.y &&
+        ball.x >= paddle.x &&
+        ball.x <= paddle.x + paddle.width
+      ) {
+        if (!lastHit) {
+          ball.dy = -ball.dy;
+          score++;
+          document.getElementById("score").textContent = score;
+          ball.dx *= (1 + ball.speedIncrease);
+          ball.dy *= (1 + ball.speedIncrease);
+
+          if (score > highScore) {
+            highScore = score;
+            document.getElementById("highScore").textContent = highScore;
+            updateHighScore(highScore);
+          }
+          lastHit = true;
+        }
+      } else {
+        // Reset flag if ball is above paddle
+        if (ball.y + ball.radius < paddle.y) {
+          lastHit = false;
+        }
+      }
+
+      // Game over
+      if (ball.y + ball.radius > canvas.height) {
+        cancelAnimationFrame(animationFrame);
+        showGameOver();
+        return;
+      }
+
+      animationFrame = requestAnimationFrame(draw);
+    }
+
+    function showGameOver() {
+      const choice = confirm("Game Over !\n\nRejouer ? OK\nMenu principal ? ANNULER");
+      if (choice) {
+        location.reload();
+      } else {
+        window.location.href = "home_page.html";
+      }
+    }
+
+    canvas.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      paddle.x = e.clientX - rect.left - paddle.width / 2;
+    });
+
+    canvas.addEventListener("touchmove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      paddle.x = touch.clientX - rect.left - paddle.width / 2;
+    });
+
+    function countdown(start) {
+      const countdownEl = document.getElementById("countdown");
+      countdownEl.textContent = start;
+
+      const interval = setInterval(() => {
+        start--;
+        if (start > 0) {
+          countdownEl.textContent = start;
+        } else {
+          clearInterval(interval);
+          countdownEl.style.display = "none";
+          gameStarted = true;
+          draw();
+        }
+      }, 1000);
+    }
+
+    resizeCanvas();
+    fetchHighScore();
+    countdown(3);
+  </script>
+</body>
+</html>
