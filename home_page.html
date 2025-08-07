@@ -119,7 +119,9 @@
       "CULture G",
       "Logique absurde",
       "Attention aux pièges",
-      "Tennis"
+      "Tennis",
+      "Monsieur, Madame 1",
+      "Monsieur, Madame 2"
     ];
 
     async function getLevelUnlocked() {
@@ -154,7 +156,7 @@
       const container = document.getElementById("level-buttons");
       container.innerHTML = "";
 
-      for (let i = 1; i <= 6; i++) {
+      for (let i = 1; i <= 8; i++) {
         const btn = document.createElement("button");
         btn.className = "btn";
         btn.textContent = levelNames[i];

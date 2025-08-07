@@ -33,6 +33,7 @@
       text-align: center;
       width: 250px;
       margin-bottom: 10px;
+      text-transform: uppercase;
     }
 
     .hint {
@@ -103,17 +104,17 @@
   </div>
 
   <script>
-    const blagues = [
-      { question: "Quel est le cousin russe d’Ivan ?", answer: "yvan dushit", hint: "Y___ D____t" },
-      { question: "Quel est celui qui est toujours à la traîne ?", answer: "jean kul", hint: "J___ K__" },
-      { question: "Qui porte tout sur son dos ?", answer: "bill houte", hint: "B___ H____" },
-      { question: "Qui oublie de tirer la chasse ?", answer: "imad waté", hint: "I___ W___" },
-      { question: "Qui arrive quand on s’y attend pas ?", answer: "homer dalors", hint: "H____ D_____" },
-      { question: "Qui est toujours vexé ?", answer: "gérard menvussa", hint: "G_____ M_______" },
-      { question: "Qui se mêle de tout ?", answer: "pacome toulmonde", hint: "P_____ T________" },
-      { question: "Qui cuisine avec des herbes ?", answer: "vincent thyme", hint: "V______ T____" },
-      { question: "Qui ne boit que de l’eau ?", answer: "jd népi", hint: "J_ ____" },
-      { question: "Qui est introuvable ?", answer: "james ussé", hint: "J____ U___" }
+    const questions = [
+      { question: "Monsieur et Madame Dushit ont un fils. Comment s'appelle-t-il ?", answer: "YVAN" },
+      { question: "Monsieur et Madame Kul ont un fils. Comment s'appelle-t-il ?", answer: "JEAN" },
+      { question: "Monsieur et Madame Houte ont un fils. Comment s'appelle-t-il ?", answer: "BILL" },
+      { question: "Monsieur et Madame Waté ont un fils. Comment s'appelle-t-il ?", answer: "IMAD" },
+      { question: "Monsieur et Madame Dalors ont un fils. Comment s'appelle-t-il ?", answer: "HOMER" },
+      { question: "Monsieur et Madame Menvussa ont un fils. Comment s'appelle-t-il ?", answer: "GERARD" },
+      { question: "Monsieur et Madame Toulmonde ont un fils. Comment s'appelle-t-il ?", answer: "PACOME" },
+      { question: "Monsieur et Madame Thyme ont un fils. Comment s'appelle-t-il ?", answer: "VINCENT" },
+      { question: "Monsieur et Madame Népi ont un fils. Comment s'appelle-t-il ?", answer: "DJ" },
+      { question: "Monsieur et Madame Ussé ont un fils. Comment s'appelle-t-il ?", answer: "JAMES" },
     ];
 
     let index = 0;
@@ -135,15 +136,16 @@
     }
 
     function showQuestion() {
-      if (index >= blagues.length) {
-        return finishLevel();
+      if (index >= questions.length) {
+        finishLevel();
+        return;
       }
 
       updateDisplay();
-      const q = blagues[index];
+      const q = questions[index];
       questionEl.textContent = q.question;
-      hintEl.textContent = q.hint;
-      progressEl.textContent = `Question ${index + 1} / ${blagues.length}`;
+      hintEl.textContent = "_ ".repeat(q.answer.length).trim();
+      progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
       answerInput.value = "";
       answerInput.focus();
       statusEl.textContent = "";
@@ -151,17 +153,17 @@
 
     function handleAnswer(e) {
       if (e.key === 'Enter') {
-        const userAnswer = answerInput.value.trim().toLowerCase();
-        const correctAnswer = blagues[index].answer;
+        const userAnswer = answerInput.value.trim().toUpperCase();
+        const correctAnswer = questions[index].answer.toUpperCase();
 
         if (userAnswer === correctAnswer) {
           score++;
-          statusEl.textContent = "Bonne réponse !";
+          statusEl.textContent = "✅ Bonne réponse !";
           feedbackImage.src = 'correct.png';
           index++;
         } else {
           lives--;
-          statusEl.textContent = "NOPE !";
+          statusEl.textContent = "❌ Mauvaise réponse !";
           feedbackImage.src = 'wrong.png';
         }
 
@@ -172,7 +174,7 @@
           feedbackImage.style.display = 'none';
 
           if (lives <= 0) {
-            alert("Game Over !");
+            alert("💀 Game Over !");
             localStorage.setItem('lives', 3);
             window.location.href = 'home_page.html';
           } else {
@@ -182,28 +184,36 @@
       }
     }
 
-    async function finishLevel() {
-      const user_id = localStorage.getItem('user_id');
-      const newLevel = 4;
+async function finishLevel() {
+  const user_id = localStorage.getItem('user_id');
+  const newLevel = 8;
 
-      if (user_id) {
-        const { error } = await window.supabase
-          .from('progressions')
-          .update({ level: newLevel })
-          .eq('user_id', user_id);
+  if (user_id && window.supabase) {
+    const { data, error } = await window.supabase
+      .from('progressions')
+      .select('level')
+      .eq('user_id', user_id)
+      .single();
 
-        if (error) {
-          console.error("Erreur progression :", error.message);
-        }
+    if (!error && data && data.level < newLevel) {
+      const { error: updateError } = await window.supabase
+        .from('progressions')
+        .update({ level: newLevel })
+        .eq('user_id', user_id);
+
+      if (updateError) {
+        console.error("Erreur mise à jour du niveau :", updateError.message);
       }
-
-      localStorage.setItem('currentLevel', newLevel);
-      alert("Bravo ! Tu as terminé le niveau blague !");
-      window.location.href = 'home_page.html';
     }
+  }
+
+  localStorage.setItem('currentLevel', newLevel);
+  alert("🎉 Bravo ! Tu as terminé le niveau 7 !");
+  window.location.href = 'home_page.html';
+}
+
 
     answerInput.addEventListener('keypress', handleAnswer);
-
     showQuestion();
   </script>
 </body>
