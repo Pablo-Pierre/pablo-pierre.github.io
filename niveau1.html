@@ -198,31 +198,38 @@
       });
     }
 
-    function handleAnswer(correct) {
-      feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
-      feedbackImage.style.display = 'block';
+function handleAnswer(correct) {
+  // Détermine l'image à afficher
+  if (correct && index === 0) {
+    feedbackImage.src = '!.png'; // Image spéciale pour la première question
+  } else {
+    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+  }
 
-      if (correct) {
-        score++;
-        statusEl.textContent = "Bonne réponse !";
-        index++;
-      } else {
-        lives--;
-        statusEl.textContent = "NOPE !";
-        updateDisplay();
-      }
+  feedbackImage.style.display = 'block';
 
-      setTimeout(() => {
-        feedbackImage.style.display = 'none';
+  if (correct) {
+    score++;
+    statusEl.textContent = "Bonne réponse !";
+    index++;
+  } else {
+    lives--;
+    statusEl.textContent = "NOPE !";
+    updateDisplay();
+  }
 
-        if (lives <= 0) {
-          alert("Game Over !");
-          window.location.href = 'home_page.html';
-        } else {
-          showQuestion();
-        }
-      }, 3000);
+  setTimeout(() => {
+    feedbackImage.style.display = 'none';
+
+    if (lives <= 0) {
+      alert("Game Over !");
+      window.location.href = 'home_page.html';
+    } else {
+      showQuestion();
     }
+  }, 3000);
+}
+
 
     async function updateProgression() {
       const user_id = localStorage.getItem('user_id');
