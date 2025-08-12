@@ -2,8 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="google-adsense-account" content="ca-pub-7651361498473024">
-  <title>Niveau 2</title>
+  <title>Niveau 1</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
@@ -35,7 +34,6 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
-      user-select: none;
     }
 
     .choice:hover {
@@ -46,7 +44,6 @@
       margin-top: 20px;
       font-size: 1.2rem;
     }
-
     #feedbackImage {
       position: fixed;
       top: 0;
@@ -56,7 +53,6 @@
       object-fit: cover;
       z-index: 999;
       display: none;
-      pointer-events: none;
     }
 
     .question-progress {
@@ -90,7 +86,7 @@
 </head>
 <body>
   <div class="menu-button">
-    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
+    <a href="home_page.html">🏰 Menu</a>
   </div>
 
   <div class="container">
@@ -103,182 +99,163 @@
     <div class="status" id="status"></div>
   </div>
 
-<script>
-  const supabase = window.supabase.createClient(
-    "https://rajtrxypmoskqeoylgmd.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw"
-  );
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://rajtrxypmoskqeoylgmd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw'
+    );
 
-  const level2Questions = [
-    {
-      question: "Combien vaut 1 + 2 + 3 + 4 + ... selon Ramanujan ?",
-      choices: ["∞", "-1/12", "Une infinité de baffes", "Je refuse ce genre de calculs"],
-      correct: "-1/12"
-    },
-    {
-      question: "Est-ce que 0.999... est égal à 1 ?",
-      choices: ["Oui", "Non", "Presque", "C’est un complot de la calculatrice"],
-      correct: "Oui"
-    },
-    {
-      question: "Quelle est la valeur de l’intégrale de Gauss : ∫ de -∞ à +∞ de e^(-x²) dx ?",
-      choices: ["√π", "π", "2", "Je ne sais même pas lire ça"],
-      correct: "√π"
-    },
-    {
-      question: "Combien vaut cette somme : 1 - 1 + 1 - 1 + 1 - 1 + ... ?",
-      choices: ["0", "1", "1/2", "Elle est schizophrène"],
-      correct: "1/2"
-    },
-    {
-      question: "Combien vaut cette intégrale : ∫ de 0 à ∞ de (x / (e^x - 1)) dx ?",
-      choices: ["π² / 6", "2", "∞", "Je suis tombé dans les pommes"],
-      correct: "π² / 6"
-    },
-    {
-      question: "Quel est le résultat de cette série : ∑ (1/n²) pour n=1 à ∞ ?",
-      choices: ["π²/6", "1.6449...", "Elle diverge", "Il faut une loupe"],
-      correct: "π²/6"
-    },
-    {
-      question: "Combien vaut ln(e^2) ?",
-      choices: ["2", "e²", "ln(e²)", "Je hais les logs"],
-      correct: "2"
-    },
-    {
-      question: "La série ∑ (1/n) pour n=1 à ∞ est-elle convergente ?",
-      choices: ["Non", "Oui", "Elle hésite", "C’est confidentiel"],
-      correct: "Non"
-    },
-    {
-      question: "Combien vaut cette intégrale : ∫ de 0 à 1 de 4 / (1 + x²) dx ?",
-      choices: ["π", "2", "1", "Je préfère les cookies"],
-      correct: "π"
-    },
-    {
-      question: "Combien fait lim(n→∞) (1 + 1/n)^n ?",
-      choices: ["e", "1", "∞", "Un nombre magique"],
-      correct: "e"
-    }
-  ];
+    const level1Questions = [
+      {
+        question: "Combien fait 6 + 4 * 3 <span style=\"font-family: Arial, sans-serif;\">!</span>",
+        choices: ["30", "18", "J’ai arrêté les maths en 4e", "x"],
+        correct: "30"
+      },
+      {
+        question: "Quel est le résultat de (2 + 3)² ?",
+        choices: ["25", "10", "Erreur de parenthèses", "2 + 9 = 11"],
+        correct: "25"
+      },
+      {
+        question: "Combien font 10 - 2 * 5 ?",
+        choices: ["0", "40", "Impossible", "8"],
+        correct: "0"
+      },
+      {
+        question: "Combien de zéros dans 1000 x 1000 ?",
+        choices: ["6", "3", "4", "J’ai paniqué"],
+        correct: "6"
+      },
+      {
+        question: "Combien vaut 0,1 + 0,2 ?",
+        choices: ["0.3", "0.30000000000000004", "3", "Ça dépend de la calculette"],
+        correct: "0.30000000000000004"
+      },
+      {
+        question: "Que donne √(16) + √(9) ?",
+        choices: ["7", "25", "4 + 3", "Racine carrée, c’est du jardinage ?"],
+        correct: "7"
+      },
+      {
+        question: "Combien fait 2^3^2 ?",
+        choices: ["512", "64", "16", "Erreur d’exposant"],
+        correct: "512"
+      },
+      {
+        question: "Si x = 5, combien vaut x² + 2x + 1 ?",
+        choices: ["36", "25", "Impossible sans calculatrice", "x"],
+        correct: "36"
+      },
+      {
+        question: "Une demi-baguette coûte 50 centimes. Combien coûtent 3 baguettes entières ?",
+        choices: ["3 €", "1,50 €", "75 centimes", "3 demi-baguettes"],
+        correct: "3 €"
+      },
+      {
+        question: "Combien font (10 + 2) / (3 * 2) ?",
+        choices: ["2", "4", "12/6", "J’ai vu des parenthèses, j’ai fui"],
+        correct: "2"
+      }
+    ];
 
-  let index = 0;
-  let score = parseInt(localStorage.getItem('score')) || 0;
-  let lives = parseInt(localStorage.getItem('lives')) || 3;
+    let index = 0;
+    let score = parseInt(localStorage.getItem('score')) || 0;
+    let lives = parseInt(localStorage.getItem('lives')) || 3;
 
-  const questionEl = document.getElementById('question');
-  const choicesEl = document.getElementById('choices');
-  const scoreEl = document.getElementById('score');
-  const livesEl = document.getElementById('lives');
-  const statusEl = document.getElementById('status');
-  const feedbackImage = document.getElementById('feedbackImage');
+    const questionEl = document.getElementById('question');
+    const choicesEl = document.getElementById('choices');
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const statusEl = document.getElementById('status');
+    const feedbackImage = document.getElementById('feedbackImage');
 
-  function updateDisplay() {
-    scoreEl.textContent = `Score : ${score}`;
-    livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
-  }
-
-  function showQuestion() {
-    if (index >= level2Questions.length) {
-      updateProgression();
-      return;
+    function updateDisplay() {
+      scoreEl.textContent = `Score : ${score}`;
+      livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
     }
 
-    updateDisplay();
-    const q = level2Questions[index];
-    questionEl.textContent = q.question;
-    choicesEl.innerHTML = '';
-    feedbackImage.style.display = 'none';
-    statusEl.textContent = '';
-    document.getElementById('progress').textContent = `Question ${index + 1} / ${level2Questions.length}`;
-
-    q.choices.forEach(choice => {
-      const btn = document.createElement('div');
-      btn.className = 'choice';
-      btn.textContent = choice;
-      btn.onclick = () => handleAnswer(choice === q.correct);
-      choicesEl.appendChild(btn);
-    });
-  }
-
-  function handleAnswer(correct) {
-    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
-    feedbackImage.style.display = 'block';
-
-    if (correct) {
-      score++;
-      statusEl.textContent = "Bonne réponse !";
-      index++;
-    } else {
-      lives--;
-      statusEl.textContent = "NOPE !";
-      updateDisplay();
-    }
-
-    setTimeout(() => {
-      feedbackImage.style.display = 'none';
-
-      if (lives <= 0) {
-        alert("Game Over !");
-        window.location.href = 'home_page.html';
+    function showQuestion() {
+      if (index >= level1Questions.length) {
+        updateProgression();
         return;
       }
 
-      showQuestion();
-    }, 2000);
+      updateDisplay();
+      const q = level1Questions[index];
+      questionEl.innerHTML = q.question;
+      choicesEl.innerHTML = '';
+      feedbackImage.style.display = 'none';
+      statusEl.textContent = '';
+      document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
+
+      q.choices.forEach(choice => {
+        const btn = document.createElement('div');
+        btn.className = 'choice';
+        btn.textContent = choice;
+        btn.onclick = () => handleAnswer(choice === q.correct);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+function handleAnswer(correct) {
+  // Détermine l'image à afficher
+
+    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+
+  feedbackImage.style.display = 'block';
+
+  if (correct) {
+    score++;
+    statusEl.textContent = "Bonne réponse !";
+    index++;
+  } else {
+    lives--;
+    statusEl.textContent = "NOPE !";
+    updateDisplay();
   }
 
-  async function updateProgression() {
-    const user_id = localStorage.getItem('user_id');
-    const newLevel = 3;
+  setTimeout(() => {
+    feedbackImage.style.display = 'none';
 
-    if (user_id) {
-      const { data, error } = await supabase
-        .from('progressions')
-        .select('level')
-        .eq('user_id', user_id)
-        .single();
+    if (lives <= 0) {
+      alert("Game Over !");
+      window.location.href = 'home_page.html';
+    } else {
+      showQuestion();
+    }
+  }, 3000);
+}
 
-      if (!error && data && data.level < newLevel) {
-        await supabase
+
+    async function updateProgression() {
+      const user_id = localStorage.getItem('user_id');
+      const newLevel = 3;
+
+      if (user_id) {
+        const { error } = await supabase
           .from('progressions')
           .update({ level: newLevel })
           .eq('user_id', user_id);
+
+        if (error) {
+          console.error("Erreur lors de la mise à jour :", error.message);
+        }
       }
+
+      localStorage.setItem('currentLevel', newLevel);
+      alert("Bravo ! Tu as terminé le niveau 2.");
+      window.location.href = 'home_page.html';
     }
 
-    localStorage.setItem('currentLevel', newLevel);
-    alert("Bravo ! Tu as terminé le niveau 2.");
-    window.location.href = 'home_page.html';
-  }
-
-  (async () => {
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
-      window.location.href = "auth.html";
-      return;
+    function preloadImages() {
+      ['correct.png', 'wrong.png'].forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
     }
 
-    localStorage.setItem("user_id", user.id);
-
-    const { data, error } = await supabase
-      .from("progressions")
-      .select("level")
-      .eq("user_id", user.id)
-      .single();
-
-    const currentUnlockedLevel = data?.level || 1;
-    const thisLevel = 2;
-
-    if (thisLevel > currentUnlockedLevel + 1) {
-      alert("Tu n'as pas encore débloqué ce niveau !");
-      window.location.href = "home_page.html";
-      return;
-    }
-
+    preloadImages();
     showQuestion();
-  })();
-</script>
-
+  </script>
 </body>
 </html>

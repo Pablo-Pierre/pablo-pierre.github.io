@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Niveau 1</title>
-  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="google-adsense-account" content="ca-pub-7651361498473024" />
+  <title>Niveau Paradoxes</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
     body {
@@ -15,17 +16,19 @@
       color: #fff6dd;
       text-align: center;
     }
-
     .container {
       padding: 30px;
     }
-
     .question {
       font-size: 1.5rem;
       margin-bottom: 30px;
       text-shadow: 1px 1px 4px black;
     }
-
+    .question-progress {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #ffddaa;
+    }
     .choice {
       background-color: #5c3b1e;
       color: #fff6dd;
@@ -34,12 +37,11 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
+      user-select: none;
     }
-
     .choice:hover {
       background-color: #704c2b;
     }
-
     .status {
       margin-top: 20px;
       font-size: 1.2rem;
@@ -53,21 +55,14 @@
       object-fit: cover;
       z-index: 999;
       display: none;
+      pointer-events: none;
     }
-
-    .question-progress {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #ffddaa;
-    }
-
     .menu-button {
       position: fixed;
       top: 15px;
       right: 20px;
       z-index: 1000;
     }
-
     .menu-button a {
       text-decoration: none;
       background-color: #5c3b1e;
@@ -78,184 +73,221 @@
       font-size: 0.95rem;
       transition: background-color 0.2s;
     }
-
     .menu-button a:hover {
       background-color: #704c2b;
     }
   </style>
 </head>
 <body>
+  <!-- Bouton Retour Menu -->
   <div class="menu-button">
-    <a href="home_page.html">🏰 Menu</a>
+    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
   </div>
-
   <div class="container">
     <div id="lives"></div>
     <div id="score"></div>
     <div id="progress" class="question-progress"></div>
     <h2 class="question" id="question"></h2>
     <div id="choices"></div>
-    <img id="feedbackImage" src="" alt="Feedback">
+    <img id="feedbackImage" src="" alt="Feedback" />
     <div class="status" id="status"></div>
   </div>
 
-  <script>
-    const supabase = window.supabase.createClient(
-      'https://rajtrxypmoskqeoylgmd.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw'
-    );
+<script>
+  const supabase = window.supabase.createClient(
+    "https://rajtrxypmoskqeoylgmd.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw"
+  );
 
-    const level1Questions = [
-      {
-        question: "Combien fait 6 + 4 * 3 <span style=\"font-family: Arial, sans-serif;\">!</span>",
-        choices: ["30", "18", "J’ai arrêté les maths en 4e", "x"],
-        correct: "30"
-      },
-      {
-        question: "Quel est le résultat de (2 + 3)² ?",
-        choices: ["25", "10", "Erreur de parenthèses", "2 + 9 = 11"],
-        correct: "25"
-      },
-      {
-        question: "Combien font 10 - 2 * 5 ?",
-        choices: ["0", "40", "Impossible", "8"],
-        correct: "0"
-      },
-      {
-        question: "Combien de zéros dans 1000 x 1000 ?",
-        choices: ["6", "3", "4", "J’ai paniqué"],
-        correct: "6"
-      },
-      {
-        question: "Combien vaut 0,1 + 0,2 ?",
-        choices: ["0.3", "0.30000000000000004", "3", "Ça dépend de la calculette"],
-        correct: "0.30000000000000004"
-      },
-      {
-        question: "Que donne √(16) + √(9) ?",
-        choices: ["7", "25", "4 + 3", "Racine carrée, c’est du jardinage ?"],
-        correct: "7"
-      },
-      {
-        question: "Combien fait 2^3^2 ?",
-        choices: ["512", "64", "16", "Erreur d’exposant"],
-        correct: "512"
-      },
-      {
-        question: "Si x = 5, combien vaut x² + 2x + 1 ?",
-        choices: ["36", "25", "Impossible sans calculatrice", "x"],
-        correct: "36"
-      },
-      {
-        question: "Une demi-baguette coûte 50 centimes. Combien coûtent 3 baguettes entières ?",
-        choices: ["3 €", "1,50 €", "75 centimes", "3 demi-baguettes"],
-        correct: "3 €"
-      },
-      {
-        question: "Combien font (10 + 2) / (3 * 2) ?",
-        choices: ["2", "4", "12/6", "J’ai vu des parenthèses, j’ai fui"],
-        correct: "2"
-      }
-    ];
+  const questions = [
+    {
+      question: "Trouvez l’<span id='trick1' style='color: red; cursor: pointer;'>errreur</span> dans cette phrase.",
+      choices: ["La grammaire", "La ponctuation", "Il manque un mot", "Elle est parfaite"],
+      correct: null,
+      trickId: "trick1"
+    },
+    {
+      question: "La réponse à cette question est D.",
+      choices: ["A", "B", "C", "D"],
+      correct: "D"
+    },
+    {
+      question: "Quel mot devient plus court quand on lui ajoute deux lettres ?",
+      choices: ["Court", "Petit", "Long", "Court-circuit"],
+      correct: "Court"
+    },
+    {
+      question: "Un avion s’écrase à la frontière. Où enterre-t-on les survivants ?",
+      choices: ["France", "Espagne", "Frontière", "Nulle part"],
+      correct: "Nulle part"
+    },
+    {
+      question: 'Clique <span id="trick3" style="color: lightgreen; cursor: pointer;">ici</span> pour gagner.',
+      choices: ['Là', 'Là-bas', 'Pas ici', 'Nulle part'],
+      correct: null,
+      trickId: 'trick3'
+    },
+    {
+      question: "Peut-on répondre « non » à cette question ?",
+      choices: ["Oui", "Non", "Peut-être", "Je bugue"],
+      correct: "Non"
+    },
+    {
+      question: "Tu es dans une course. Tu doubles le 2ᵉ. Quelle place as-tu ?",
+      choices: ["1", "2", "3", "éliminé"],
+      correct: "2"
+    },
+    {
+      question: "Ce test est-il difficile ?",
+      choices: ["Oui", "Non", "Peut-être", "Ce n’est pas cette réponse"],
+      correct: "Ce n’est pas cette réponse"
+    },
+    {
+      question: "Cliquez sur le mot <span id='trick2' style='color: yellow; cursor: pointer;'>banane</span>.",
+      choices: ["Pomme", "Poire", "Raisin", "Cerise"],
+      correct: null,
+      trickId: "trick2"
+    },
+    {
+      question: "Le père de Paul a 4 fils : Enzo, Matteo, Lucas, et ?",
+      choices: ["Paul", "Enzo", "Matteo", "Lucas"],
+      correct: "Paul"
+    }
+  ];
 
-    let index = 0;
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let lives = parseInt(localStorage.getItem('lives')) || 3;
+  let index = 0;
+  let score = 0;
+  let lives = 3;
 
-    const questionEl = document.getElementById('question');
-    const choicesEl = document.getElementById('choices');
-    const scoreEl = document.getElementById('score');
-    const livesEl = document.getElementById('lives');
-    const statusEl = document.getElementById('status');
-    const feedbackImage = document.getElementById('feedbackImage');
+  const questionEl = document.getElementById('question');
+  const choicesEl = document.getElementById('choices');
+  const scoreEl = document.getElementById('score');
+  const livesEl = document.getElementById('lives');
+  const statusEl = document.getElementById('status');
+  const feedbackImage = document.getElementById('feedbackImage');
+  const progressEl = document.getElementById('progress');
 
-    function updateDisplay() {
-      scoreEl.textContent = `Score : ${score}`;
-      livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+  function updateDisplay() {
+    scoreEl.textContent = `Score : ${score}`;
+    livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+    progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
+  }
+
+  function showQuestion() {
+    if (index >= questions.length) {
+      updateProgression();
+      return;
     }
 
-    function showQuestion() {
-      if (index >= level1Questions.length) {
-        updateProgression();
+    updateDisplay();
+    const q = questions[index];
+    statusEl.textContent = '';
+    choicesEl.innerHTML = '';
+    feedbackImage.style.display = 'none';
+    questionEl.innerHTML = q.question;
+
+    if (q.trickId) {
+      setTimeout(() => {
+        const trick = document.getElementById(q.trickId);
+        if (trick) {
+          trick.onclick = () => handleAnswer(true);
+        }
+      }, 10);
+    }
+
+    q.choices.forEach(choice => {
+      const btn = document.createElement('div');
+      btn.className = 'choice';
+      btn.textContent = choice;
+      btn.onclick = () => handleAnswer(choice === q.correct);
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(correct) {
+    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+    feedbackImage.style.display = 'block';
+
+    if (correct) {
+      score++;
+      statusEl.textContent = "Bonne réponse !";
+      index++;
+    } else {
+      lives--;
+      statusEl.textContent = "NOPE !";
+      updateDisplay();
+    }
+
+    setTimeout(() => {
+      feedbackImage.style.display = 'none';
+
+      if (lives <= 0) {
+        alert("Game Over !");
+        window.location.href = 'home_page.html';
         return;
       }
 
-      updateDisplay();
-      const q = level1Questions[index];
-      questionEl.innerHTML = q.question;
-      choicesEl.innerHTML = '';
-      feedbackImage.style.display = 'none';
-      statusEl.textContent = '';
-      document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
-
-      q.choices.forEach(choice => {
-        const btn = document.createElement('div');
-        btn.className = 'choice';
-        btn.textContent = choice;
-        btn.onclick = () => handleAnswer(choice === q.correct);
-        choicesEl.appendChild(btn);
-      });
-    }
-
-function handleAnswer(correct) {
-  // Détermine l'image à afficher
-
-    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
-
-  feedbackImage.style.display = 'block';
-
-  if (correct) {
-    score++;
-    statusEl.textContent = "Bonne réponse !";
-    index++;
-  } else {
-    lives--;
-    statusEl.textContent = "NOPE !";
-    updateDisplay();
+      showQuestion();
+    }, 2500);
   }
 
-  setTimeout(() => {
-    feedbackImage.style.display = 'none';
+  async function updateProgression() {
+    const user_id = localStorage.getItem('user_id');
+    const newLevel = 6;
 
-    if (lives <= 0) {
-      alert("Game Over !");
-      window.location.href = 'home_page.html';
-    } else {
-      showQuestion();
-    }
-  }, 3000);
-}
+    if (user_id) {
+      const { data, error } = await supabase
+        .from('progressions')
+        .select('level')
+        .eq('user_id', user_id)
+        .single();
 
-
-    async function updateProgression() {
-      const user_id = localStorage.getItem('user_id');
-      const newLevel = 2;
-
-      if (user_id) {
-        const { error } = await supabase
+      if (!error && data && data.level < newLevel) {
+        await supabase
           .from('progressions')
           .update({ level: newLevel })
           .eq('user_id', user_id);
-
-        if (error) {
-          console.error("Erreur lors de la mise à jour :", error.message);
-        }
       }
-
-      localStorage.setItem('currentLevel', newLevel);
-      alert("Bravo ! Tu as terminé le niveau 1.");
-      window.location.href = 'home_page.html';
     }
 
-    function preloadImages() {
-      ['correct.png', 'wrong.png'].forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
+    localStorage.setItem('currentLevel', newLevel);
+    alert("Bravo ! Tu as terminé le niveau Paradoxes !");
+    window.location.href = 'home_page.html';
+  }
+
+  const preloadImages = () => {
+    ['correct.png', 'wrong.png'].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  };
+  preloadImages();
+
+  (async () => {
+    const user_id = localStorage.getItem("user_id");
+    if (!user_id) {
+      window.location.href = "login.html";
+      return;
     }
 
-    preloadImages();
+    const { data, error } = await supabase
+      .from("progressions")
+      .select("level")
+      .eq("user_id", user_id)
+      .single();
+
+    const currentUnlockedLevel = data?.level || 1;
+    const thisLevel = 2;
+
+    if (thisLevel > currentUnlockedLevel + 1) {
+      alert("Tu n'as pas encore débloqué ce niveau !");
+      window.location.href = "home_page.html";
+      return;
+    }
+
     showQuestion();
-  </script>
+  })();
+</script>
+
 </body>
 </html>
