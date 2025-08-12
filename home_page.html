@@ -6,6 +6,7 @@
   <title>Royaume</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -24,31 +25,32 @@
       align-items: center;
       min-height: 100vh;
       padding: 20px;
-      backdrop-filter: brightness(0.8);
+      backdrop-filter: brightness(0.85);
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       text-shadow: 2px 2px 5px #000;
+      margin-bottom: 1rem;
     }
 
     h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
     }
 
     .btn {
       background-color: #5c3b1e;
       color: #fff6dd;
       border: none;
-      padding: 15px 30px;
-      margin: 10px;
-      font-size: 1.2rem;
-      border-radius: 10px;
+      padding: 18px 35px;
+      margin: 12px;
+      font-size: 1.3rem;
+      border-radius: 12px;
       cursor: pointer;
       transition: transform 0.2s;
-      min-width: 180px;
-      text-align: center;
+      width: 90%;
+      max-width: 320px;
     }
 
     .btn:hover {
@@ -59,33 +61,46 @@
     .btn.locked {
       background-color: #999;
       cursor: not-allowed;
-      opacity: 0.5;
+      opacity: 0.6;
     }
 
-    /* Bouton Mini jeu spécifique, plus gros que les autres */
     .mini-jeu-btn {
       background-color: #7a5227;
-      padding: 20px 40px;
-      font-size: 1.5rem;
+      padding: 22px 40px;
+      font-size: 1.6rem;
       font-weight: bold;
       margin-bottom: 30px;
       border-radius: 15px;
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
       cursor: pointer;
       transition: background-color 0.3s, transform 0.3s;
-      min-width: 220px;
+      width: 95%;
+      max-width: 350px;
     }
 
     .mini-jeu-btn:hover {
       background-color: #a76e3c;
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
 
     ul#leaderboard {
       list-style-type: none;
       padding: 0;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.4rem; }
+      h2 { font-size: 1.4rem; }
+      .btn, .mini-jeu-btn { font-size: 1.2rem; padding: 16px 28px; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.2rem; }
+      .btn, .mini-jeu-btn { font-size: 1.1rem; padding: 14px 22px; }
+      ul#leaderboard { font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -109,7 +124,7 @@
     );
 
     const levelNames = [
-      "", // index 0 inutilisé
+      "",
       "Attention aux pièges",
       "Maths de CE1",
       "CULture G",
@@ -121,20 +136,16 @@
       "Logique propositionnelle"
     ];
 
-    // Mini jeu bouton click redirection
     document.getElementById('mini-jeu-btn').addEventListener('click', () => {
       window.location.href = "mini-jeu.html";
     });
 
     async function getLevelUnlocked() {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
-
       if (userError || !user) {
-        console.warn("Pas d'utilisateur connecté. Redirection...");
         window.location.href = "auth.html";
         return;
       }
-
       const user_id = user.id;
       localStorage.setItem("user_id", user_id);
 
@@ -144,30 +155,23 @@
         .eq("user_id", user_id)
         .single();
 
-      if (error || !data) {
-        console.warn("Aucune progression trouvée, défaut niveau 1.");
-        return 1;
-      }
-
+      if (error || !data) return 1;
       return data.level;
     }
 
     function createButtons(levelUnlocked) {
       const container = document.getElementById("level-buttons");
       container.innerHTML = "";
-
       for (let i = 1; i <= 9; i++) {
         const btn = document.createElement("button");
         btn.className = "btn";
         btn.textContent = levelNames[i];
-
         if (i <= levelUnlocked) {
           btn.onclick = () => startLevel(i);
         } else {
           btn.classList.add("locked");
           btn.onclick = () => alert("Termine les niveaux précédents pour débloquer celui-ci !");
         }
-
         container.appendChild(btn);
       }
     }
@@ -188,30 +192,19 @@
 
       const list = document.getElementById('leaderboard');
       list.innerHTML = "";
-
-      if (error) {
-        console.error("Erreur leaderboard :", error.message);
-        list.innerHTML = "<li>Erreur de chargement</li>";
-        return;
-      }
-
-      if (!data || data.length === 0) {
+      if (error || !data || data.length === 0) {
         list.innerHTML = "<li>Aucun score disponible</li>";
         return;
       }
 
       data.forEach((player, index) => {
-        const name = player.pseudo && player.pseudo.trim() !== ""
-          ? player.pseudo
-          : (player.user_id?.substring(0, 6) || "Anonyme");
-
+        const name = player.pseudo?.trim() || (player.user_id?.substring(0, 6) || "Anonyme");
         const li = document.createElement('li');
         li.textContent = `${index + 1}. ${name} — ${player.mini_jeu ?? 0} pts`;
         list.appendChild(li);
       });
     }
 
-    // Initialisation
     getLevelUnlocked().then(createButtons);
     loadLeaderboard();
   </script>
