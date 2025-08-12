@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #fff6dd;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: rgba(92, 59, 30, 0.15);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 246, 221, 0.2);
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    input[type="email"], input[type="text"], input[type="password"] {
+      background-color: #fff6dd;
+      color: #1a1a1a;
+    }
+
+    button {
+      padding: 12px;
+      font-size: 1.1rem;
+      margin-top: 10px;
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #704c2b;
+    }
+
+    a {
+      color: #fff6dd;
+      text-decoration: underline;
+      display: block;
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Créer un compte</h1>
+    <form>
+      <input type="email" placeholder="Adresse e-mail" required>
+      <input type="text" placeholder="Pseudo" required>
+      <input type="password" placeholder="Mot de passe" required>
+      <button type="submit">S'inscrire</button>
+    </form>
+    <a href="auth.html">← Retour</a>
+  </div>
+</body>
+</html>
