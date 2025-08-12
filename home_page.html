@@ -117,7 +117,8 @@
       "Maths de CE2",
       "Tennis",
       "Monsieur, Madame 1",
-      "Monsieur, Madame 2"
+      "Monsieur, Madame 2",
+      "Logique propositionnelle"
     ];
 
     // Mini jeu bouton click redirection
@@ -155,7 +156,7 @@
       const container = document.getElementById("level-buttons");
       container.innerHTML = "";
 
-      for (let i = 1; i <= 8; i++) {
+      for (let i = 1; i <= 9; i++) {
         const btn = document.createElement("button");
         btn.className = "btn";
         btn.textContent = levelNames[i];

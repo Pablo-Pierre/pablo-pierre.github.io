@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google-adsense-account" content="ca-pub-7651361498473024" />
+  <title>Niveau 9</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('background.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'MedievalSharp', cursive;
+      color: #fff6dd;
+      text-align: center;
+    }
+    .container { padding: 30px; }
+    .question {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 4px black;
+    }
+    .choice {
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .choice:hover { background-color: #704c2b; }
+    .status {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+    #feedbackImage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 999;
+      display: none;
+      pointer-events: none;
+    }
+    .question-progress {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #ffddaa;
+    }
+    .menu-button {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .menu-button a {
+      text-decoration: none;
+      background-color: #5c3b1e;
+      color: #fff6dd;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      transition: background-color 0.2s;
+    }
+    .menu-button a:hover { background-color: #704c2b; }
+  </style>
+</head>
+<body>
+  <div class="menu-button">
+    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
+  </div>
+  <div class="container">
+    <div id="lives"></div>
+    <div id="score"></div>
+    <div id="progress" class="question-progress"></div>
+    <h2 class="question" id="question"></h2>
+    <div id="choices"></div>
+    <img id="feedbackImage" src="" alt="Feedback" />
+    <div class="status" id="status"></div>
+  </div>
+
+<script>
+  const supabase = window.supabase.createClient(
+    "https://rajtrxypmoskqeoylgmd.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw"
+  );
+
+const level9Questions = [
+  {
+    question: "Quelle est la négation de « Je pense donc je suis » ?",
+    choices: [
+      "Je ne pense pas et je suis",
+      "Je pense et je ne suis pas",
+      "Si je ne pense pas, alors je ne suis pas",
+      "Je suis donc je pense"
+    ],
+    correct: "Je pense et je ne suis pas"
+  },
+  {
+    question: "Quelle est la négation de « Si je dors, alors je rêve » ?",
+    choices: [
+      "Je rêve et je dors",
+      "Je dors et je ne rêve pas",
+      "Si je rêve, alors je dors",
+      "Je ne dors pas et je rêve"
+    ],
+    correct: "Je dors et je ne rêve pas"
+  },
+  {
+    question: "Quelle est la négation de « Je chante si et seulement s’il fait beau » ?",
+    choices: [
+      "Il fait beau et je chante",
+      "Il fait beau mais je ne chante pas",
+      "Je chante et il ne fait pas beau",
+      "Réponses 2 et 3"
+    ],
+    correct: "Réponses 2 et 3"
+  },
+  {
+    question: "Négation de « Soit je gagne, soit je perds (mais pas les deux) » ?",
+    choices: [
+      "Je gagne et je perds",
+      "Je ne gagne pas et je ne perds pas",
+      "Je gagne ou je perds ou les deux",
+      "Réponses 1 et 2"
+    ],
+    correct: "Réponses 1 et 2"
+  },
+  {
+    question: "Si « Si je mange, alors je vis » est vrai, laquelle est aussi vraie (contraposée) ?",
+    choices: [
+      "Si je ne vis pas, alors je ne mange pas",
+      "Si je vis, alors je mange",
+      "Je ne mange pas donc je ne vis pas",
+      "Si je mange, alors je ne vis pas"
+    ],
+    correct: "Si je ne vis pas, alors je ne mange pas"
+  },
+  {
+    question: "Négation de « Si je réussis l'examen, alors j'aurai mon diplôme » ?",
+    choices: [
+      "Je réussis l'examen et je n'ai pas mon diplôme",
+      "Je ne réussis pas l'examen et je n'ai pas mon diplôme",
+      "Je réussis l'examen et j'ai mon diplôme",
+      "Je ne réussis pas l'examen et j'ai mon diplôme"
+    ],
+    correct: "Je réussis l'examen et je n'ai pas mon diplôme"
+  },
+  {
+    question: "Négation de « Tous les chats sont noirs » ?",
+    choices: [
+      "Aucun chat n'est noir",
+      "Au moins un chat n'est pas noir",
+      "Tous les chats sont blancs",
+      "Certains chats sont noirs"
+    ],
+    correct: "Au moins un chat n'est pas noir"
+  },
+  {
+    question: "Quelle est la négation de « Il pleut ou il neige » ?",
+    choices: [
+      "Il ne pleut pas et il ne neige pas",
+      "Il ne pleut pas ou il ne neige pas",
+      "Il pleut et il neige",
+      "Il pleut mais il ne neige pas"
+    ],
+    correct: "Il ne pleut pas et il ne neige pas"
+  },
+  {
+    question: "Négation de « Pierre est intelligent et travailleur » ?",
+    choices: [
+      "Pierre est intelligent ou travailleur",
+      "Pierre n'est pas intelligent ou il n'est pas travailleur",
+      "Pierre n'est pas intelligent et il n'est pas travailleur",
+      "Pierre est intelligent mais paresseux"
+    ],
+    correct: "Pierre n'est pas intelligent ou il n'est pas travailleur"
+  },
+  {
+    question: "Négation de « Il faut être majeur pour voter » (interprétation logique stricte) ?",
+    choices: [
+      "Il faut être mineur pour voter",
+      "Une personne non majeure peut voter",
+      "Seules les personnes majeures votent",
+      "Personne ne vote"
+    ],
+    correct: "Une personne non majeure peut voter"
+  }
+];
+
+
+  let index = 0;
+  let score = parseInt(localStorage.getItem('score')) || 0;
+  let lives = parseInt(localStorage.getItem('lives')) || 3;
+
+  const questionEl = document.getElementById('question');
+  const choicesEl = document.getElementById('choices');
+  const scoreEl = document.getElementById('score');
+  const livesEl = document.getElementById('lives');
+  const statusEl = document.getElementById('status');
+  const feedbackImage = document.getElementById('feedbackImage');
+
+  function updateDisplay() {
+    scoreEl.textContent = `Score : ${score}`;
+    livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+  }
+
+  function showQuestion() {
+    if (index >= level9Questions.length) {
+      updateProgression();
+      return;
+    }
+    updateDisplay();
+    const q = level9Questions[index];
+    questionEl.textContent = q.question;
+    choicesEl.innerHTML = '';
+    feedbackImage.style.display = 'none';
+    statusEl.textContent = '';
+    document.getElementById('progress').textContent = `Question ${index + 1} / ${level9Questions.length}`;
+
+    q.choices.forEach(choice => {
+      const btn = document.createElement('div');
+      btn.className = 'choice';
+      btn.textContent = choice;
+      btn.onclick = () => handleAnswer(choice === q.correct);
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(correct) {
+    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+    feedbackImage.style.display = 'block';
+    if (correct) {
+      score++;
+      statusEl.textContent = "Bonne réponse !";
+      index++;
+    } else {
+      lives--;
+      statusEl.textContent = "NOPE !";
+      updateDisplay();
+    }
+    setTimeout(() => {
+      feedbackImage.style.display = 'none';
+      if (lives <= 0) {
+        alert("Game Over !");
+        window.location.href = 'home_page.html';
+        return;
+      }
+      showQuestion();
+    }, 2000);
+  }
+
+  async function updateProgression() {
+    const user_id = localStorage.getItem('user_id');
+    const newLevel = 10;
+    if (user_id) {
+      const { data, error } = await supabase
+        .from('progressions')
+        .select('level')
+        .eq('user_id', user_id)
+        .single();
+      if (!error && data && data.level < newLevel) {
+        await supabase
+          .from('progressions')
+          .update({ level: newLevel })
+          .eq('user_id', user_id);
+      }
+    }
+    localStorage.setItem('currentLevel', newLevel);
+    alert("Bravo ! Tu as terminé le niveau 9.");
+    window.location.href = 'home_page.html';
+  }
+
+  const preloadImages = () => {
+    ['correct.png', 'wrong.png'].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  };
+  preloadImages();
+
+  (async () => {
+    const user_id = localStorage.getItem("user_id");
+    if (!user_id) {
+      window.location.href = "login.html";
+      return;
+    }
+    const { data, error } = await supabase
+      .from("progressions")
+      .select("level")
+      .eq("user_id", user_id)
+      .single();
+    const currentUnlockedLevel = data?.level || 1;
+    const thisLevel = 9;
+    if (thisLevel > currentUnlockedLevel + 1) {
+      alert("Tu n'as pas encore débloqué ce niveau !");
+      window.location.href = "home_page.html";
+      return;
+    }
+    showQuestion();
+  })();
+</script>
+</body>
+</html>
