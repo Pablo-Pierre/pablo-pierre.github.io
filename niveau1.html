@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-adsense-account" content="ca-pub-7651361498473024" />
   <title>Niveau Paradoxes</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
@@ -17,34 +18,42 @@
       text-align: center;
     }
     .container {
-      padding: 30px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
     }
     .question {
-      font-size: 1.5rem;
-      margin-bottom: 30px;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      margin-bottom: 20px;
       text-shadow: 1px 1px 4px black;
+      line-height: 1.4;
     }
     .question-progress {
-      font-size: 1.2rem;
+      font-size: clamp(1rem, 3vw, 1.2rem);
       margin-bottom: 10px;
       color: #ffddaa;
     }
     .choice {
       background-color: #5c3b1e;
       color: #fff6dd;
-      padding: 15px;
-      margin: 10px;
+      padding: 14px;
+      margin: 8px 0;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
       user-select: none;
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .choice:hover {
       background-color: #704c2b;
     }
     .status {
-      margin-top: 20px;
-      font-size: 1.2rem;
+      margin-top: 15px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
     }
     #feedbackImage {
       position: fixed;
@@ -59,8 +68,8 @@
     }
     .menu-button {
       position: fixed;
-      top: 15px;
-      right: 20px;
+      top: 10px;
+      right: 15px;
       z-index: 1000;
     }
     .menu-button a {
@@ -70,11 +79,24 @@
       padding: 8px 14px;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: clamp(0.85rem, 3vw, 0.95rem);
       transition: background-color 0.2s;
     }
     .menu-button a:hover {
       background-color: #704c2b;
+    }
+    /* Ajustements petits écrans */
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+      .choice {
+        padding: 12px;
+      }
+      .menu-button {
+        top: 8px;
+        right: 10px;
+      }
     }
   </style>
 </head>
@@ -100,59 +122,16 @@
   );
 
   const questions = [
-    {
-      question: "Trouvez l’<span id='trick1' style='color: red; cursor: pointer;'>errreur</span> dans cette phrase.",
-      choices: ["La grammaire", "La ponctuation", "Il manque un mot", "Elle est parfaite"],
-      correct: null,
-      trickId: "trick1"
-    },
-    {
-      question: "La réponse à cette question est D.",
-      choices: ["A", "B", "C", "D"],
-      correct: "D"
-    },
-    {
-      question: "Quel mot devient plus court quand on lui ajoute deux lettres ?",
-      choices: ["Court", "Petit", "Long", "Court-circuit"],
-      correct: "Court"
-    },
-    {
-      question: "Un avion s’écrase à la frontière. Où enterre-t-on les survivants ?",
-      choices: ["France", "Espagne", "Frontière", "Nulle part"],
-      correct: "Nulle part"
-    },
-    {
-      question: 'Clique <span id="trick3" style="color: lightgreen; cursor: pointer;">ici</span> pour gagner.',
-      choices: ['Là', 'Là-bas', 'Pas ici', 'Nulle part'],
-      correct: null,
-      trickId: 'trick3'
-    },
-    {
-      question: "Peut-on répondre « non » à cette question ?",
-      choices: ["Oui", "Non", "Peut-être", "Je bugue"],
-      correct: "Non"
-    },
-    {
-      question: "Tu es dans une course. Tu doubles le 2ᵉ. Quelle place as-tu ?",
-      choices: ["1", "2", "3", "éliminé"],
-      correct: "2"
-    },
-    {
-      question: "Ce test est-il difficile ?",
-      choices: ["Oui", "Non", "Peut-être", "Ce n’est pas cette réponse"],
-      correct: "Ce n’est pas cette réponse"
-    },
-    {
-      question: "Cliquez sur le mot <span id='trick2' style='color: yellow; cursor: pointer;'>banane</span>.",
-      choices: ["Pomme", "Poire", "Raisin", "Cerise"],
-      correct: null,
-      trickId: "trick2"
-    },
-    {
-      question: "Le père de Paul a 4 fils : Lundi, Mardi, Mercredi, et ?",
-      choices: ["Jeudi", "Dimanche", "Matteo", "Paul"],
-      correct: "Paul"
-    }
+    { question: "Trouvez l’<span id='trick1' style='color: red; cursor: pointer;'>errreur</span> dans cette phrase.", choices: ["La grammaire", "La ponctuation", "Il manque un mot", "Elle est parfaite"], correct: null, trickId: "trick1" },
+    { question: "La réponse à cette question est D.", choices: ["A", "B", "C", "D"], correct: "D" },
+    { question: "Quel mot devient plus court quand on lui ajoute deux lettres ?", choices: ["Court", "Petit", "Long", "Court-circuit"], correct: "Court" },
+    { question: "Un avion s’écrase à la frontière. Où enterre-t-on les survivants ?", choices: ["France", "Espagne", "Frontière", "Nulle part"], correct: "Nulle part" },
+    { question: 'Clique <span id="trick3" style="color: lightgreen; cursor: pointer;">ici</span> pour gagner.', choices: ['Là', 'Là-bas', 'Pas ici', 'Nulle part'], correct: null, trickId: 'trick3' },
+    { question: "Peut-on répondre « non » à cette question ?", choices: ["Oui", "Non", "Peut-être", "Je bugue"], correct: "Non" },
+    { question: "Tu es dans une course. Tu doubles le 2ᵉ. Quelle place as-tu ?", choices: ["1", "2", "3", "éliminé"], correct: "2" },
+    { question: "Ce test est-il difficile ?", choices: ["Oui", "Non", "Peut-être", "Ce n’est pas cette réponse"], correct: "Ce n’est pas cette réponse" },
+    { question: "Cliquez sur le mot <span id='trick2' style='color: yellow; cursor: pointer;'>banane</span>.", choices: ["Pomme", "Poire", "Raisin", "Cerise"], correct: null, trickId: "trick2" },
+    { question: "Le père de Paul a 4 fils : Lundi, Mardi, Mercredi, et ?", choices: ["Jeudi", "Dimanche", "Matteo", "Paul"], correct: "Paul" }
   ];
 
   let index = 0;
@@ -220,15 +199,13 @@
 
     setTimeout(() => {
       feedbackImage.style.display = 'none';
-
       if (lives <= 0) {
         alert("Game Over !");
         window.location.href = 'home_page.html';
         return;
       }
-
       showQuestion();
-    }, 2500);
+    }, 2000);
   }
 
   async function updateProgression() {

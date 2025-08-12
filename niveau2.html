@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Niveau 1</title>
-  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-adsense-account" content="ca-pub-7651361498473024" />
+  <title>Niveau 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
     body {
@@ -15,34 +17,43 @@
       color: #fff6dd;
       text-align: center;
     }
-
     .container {
-      padding: 30px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
     }
-
     .question {
-      font-size: 1.5rem;
-      margin-bottom: 30px;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      margin-bottom: 20px;
       text-shadow: 1px 1px 4px black;
+      line-height: 1.4;
     }
-
+    .question-progress {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      margin-bottom: 10px;
+      color: #ffddaa;
+    }
     .choice {
       background-color: #5c3b1e;
       color: #fff6dd;
-      padding: 15px;
-      margin: 10px;
+      padding: 14px;
+      margin: 8px 0;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
+      user-select: none;
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
     .choice:hover {
       background-color: #704c2b;
     }
-
     .status {
-      margin-top: 20px;
-      font-size: 1.2rem;
+      margin-top: 15px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
     }
     #feedbackImage {
       position: fixed;
@@ -53,21 +64,14 @@
       object-fit: cover;
       z-index: 999;
       display: none;
+      pointer-events: none;
     }
-
-    .question-progress {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #ffddaa;
-    }
-
     .menu-button {
       position: fixed;
-      top: 15px;
-      right: 20px;
+      top: 10px;
+      right: 15px;
       z-index: 1000;
     }
-
     .menu-button a {
       text-decoration: none;
       background-color: #5c3b1e;
@@ -75,37 +79,49 @@
       padding: 8px 14px;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: clamp(0.85rem, 3vw, 0.95rem);
       transition: background-color 0.2s;
     }
-
     .menu-button a:hover {
       background-color: #704c2b;
+    }
+    /* Ajustements petits écrans */
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+      .choice {
+        padding: 12px;
+      }
+      .menu-button {
+        top: 8px;
+        right: 10px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Bouton Retour Menu -->
   <div class="menu-button">
-    <a href="home_page.html">🏰 Menu</a>
+    <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
   </div>
-
   <div class="container">
     <div id="lives"></div>
     <div id="score"></div>
     <div id="progress" class="question-progress"></div>
     <h2 class="question" id="question"></h2>
     <div id="choices"></div>
-    <img id="feedbackImage" src="" alt="Feedback">
+    <img id="feedbackImage" src="" alt="Feedback" />
     <div class="status" id="status"></div>
   </div>
 
-  <script>
-    const supabase = window.supabase.createClient(
-      'https://rajtrxypmoskqeoylgmd.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw'
-    );
+<script>
+  const supabase = window.supabase.createClient(
+    "https://rajtrxypmoskqeoylgmd.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw"
+  );
 
-    const level1Questions = [
+    const questions = [
       {
         question: "Combien fait 6 + 4 * 3 <span style=\"font-family: Arial, sans-serif;\">!</span>",
         choices: ["30", "18", "J’ai arrêté les maths en 4e", "x"],
@@ -158,104 +174,137 @@
       }
     ];
 
-    let index = 0;
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let lives = parseInt(localStorage.getItem('lives')) || 3;
+  let index = 0;
+  let score = 0;
+  let lives = 3;
 
-    const questionEl = document.getElementById('question');
-    const choicesEl = document.getElementById('choices');
-    const scoreEl = document.getElementById('score');
-    const livesEl = document.getElementById('lives');
-    const statusEl = document.getElementById('status');
-    const feedbackImage = document.getElementById('feedbackImage');
+  const questionEl = document.getElementById('question');
+  const choicesEl = document.getElementById('choices');
+  const scoreEl = document.getElementById('score');
+  const livesEl = document.getElementById('lives');
+  const statusEl = document.getElementById('status');
+  const feedbackImage = document.getElementById('feedbackImage');
+  const progressEl = document.getElementById('progress');
 
-    function updateDisplay() {
-      scoreEl.textContent = `Score : ${score}`;
-      livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
-    }
-
-    function showQuestion() {
-      if (index >= level1Questions.length) {
-        updateProgression();
-        return;
-      }
-
-      updateDisplay();
-      const q = level1Questions[index];
-      questionEl.innerHTML = q.question;
-      choicesEl.innerHTML = '';
-      feedbackImage.style.display = 'none';
-      statusEl.textContent = '';
-      document.getElementById('progress').textContent = `Question ${index + 1} / ${level1Questions.length}`;
-
-      q.choices.forEach(choice => {
-        const btn = document.createElement('div');
-        btn.className = 'choice';
-        btn.textContent = choice;
-        btn.onclick = () => handleAnswer(choice === q.correct);
-        choicesEl.appendChild(btn);
-      });
-    }
-
-function handleAnswer(correct) {
-  // Détermine l'image à afficher
-
-    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
-
-  feedbackImage.style.display = 'block';
-
-  if (correct) {
-    score++;
-    statusEl.textContent = "Bonne réponse !";
-    index++;
-  } else {
-    lives--;
-    statusEl.textContent = "NOPE !";
-    updateDisplay();
+  function updateDisplay() {
+    scoreEl.textContent = `Score : ${score}`;
+    livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+    progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
   }
 
-  setTimeout(() => {
-    feedbackImage.style.display = 'none';
-
-    if (lives <= 0) {
-      alert("Game Over !");
-      window.location.href = 'home_page.html';
-    } else {
-      showQuestion();
+  function showQuestion() {
+    if (index >= questions.length) {
+      updateProgression();
+      return;
     }
-  }, 3000);
-}
 
+    updateDisplay();
+    const q = questions[index];
+    statusEl.textContent = '';
+    choicesEl.innerHTML = '';
+    feedbackImage.style.display = 'none';
+    questionEl.innerHTML = q.question;
 
-    async function updateProgression() {
-      const user_id = localStorage.getItem('user_id');
-      const newLevel = 3;
+    if (q.trickId) {
+      setTimeout(() => {
+        const trick = document.getElementById(q.trickId);
+        if (trick) {
+          trick.onclick = () => handleAnswer(true);
+        }
+      }, 10);
+    }
 
-      if (user_id) {
-        const { error } = await supabase
+    q.choices.forEach(choice => {
+      const btn = document.createElement('div');
+      btn.className = 'choice';
+      btn.textContent = choice;
+      btn.onclick = () => handleAnswer(choice === q.correct);
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(correct) {
+    feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
+    feedbackImage.style.display = 'block';
+
+    if (correct) {
+      score++;
+      statusEl.textContent = "Bonne réponse !";
+      index++;
+    } else {
+      lives--;
+      statusEl.textContent = "NOPE !";
+      updateDisplay();
+    }
+
+    setTimeout(() => {
+      feedbackImage.style.display = 'none';
+      if (lives <= 0) {
+        alert("Game Over !");
+        window.location.href = 'home_page.html';
+        return;
+      }
+      showQuestion();
+    }, 2000);
+  }
+
+  async function updateProgression() {
+    const user_id = localStorage.getItem('user_id');
+    const newLevel = 3;
+
+    if (user_id) {
+      const { data, error } = await supabase
+        .from('progressions')
+        .select('level')
+        .eq('user_id', user_id)
+        .single();
+
+      if (!error && data && data.level < newLevel) {
+        await supabase
           .from('progressions')
           .update({ level: newLevel })
           .eq('user_id', user_id);
-
-        if (error) {
-          console.error("Erreur lors de la mise à jour :", error.message);
-        }
       }
-
-      localStorage.setItem('currentLevel', newLevel);
-      alert("Bravo ! Tu as terminé le niveau 2.");
-      window.location.href = 'home_page.html';
     }
 
-    function preloadImages() {
-      ['correct.png', 'wrong.png'].forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
+    localStorage.setItem('currentLevel', newLevel);
+    alert("Bravo ! Tu as terminé le niveau 2");
+    window.location.href = 'home_page.html';
+  }
+
+  const preloadImages = () => {
+    ['correct.png', 'wrong.png'].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  };
+  preloadImages();
+
+  (async () => {
+    const user_id = localStorage.getItem("user_id");
+    if (!user_id) {
+      window.location.href = "login.html";
+      return;
     }
 
-    preloadImages();
+    const { data, error } = await supabase
+      .from("progressions")
+      .select("level")
+      .eq("user_id", user_id)
+      .single();
+
+    const currentUnlockedLevel = data?.level || 1;
+    const thisLevel = 3;
+
+    if (thisLevel > currentUnlockedLevel + 1) {
+      alert("Tu n'as pas encore débloqué ce niveau !");
+      window.location.href = "home_page.html";
+      return;
+    }
+
     showQuestion();
-  </script>
+  })();
+</script>
+
 </body>
 </html>

@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-adsense-account" content="ca-pub-7651361498473024" />
   <title>Niveau 9</title>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet" />
@@ -16,26 +17,43 @@
       color: #fff6dd;
       text-align: center;
     }
-    .container { padding: 30px; }
+    .container {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
     .question {
-      font-size: 1.5rem;
-      margin-bottom: 30px;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      margin-bottom: 20px;
       text-shadow: 1px 1px 4px black;
+      line-height: 1.4;
+    }
+    .question-progress {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      margin-bottom: 10px;
+      color: #ffddaa;
     }
     .choice {
       background-color: #5c3b1e;
       color: #fff6dd;
-      padding: 15px;
-      margin: 10px;
+      padding: 14px;
+      margin: 8px 0;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
       user-select: none;
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .choice:hover { background-color: #704c2b; }
+    .choice:hover {
+      background-color: #704c2b;
+    }
     .status {
-      margin-top: 20px;
-      font-size: 1.2rem;
+      margin-top: 15px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
     }
     #feedbackImage {
       position: fixed;
@@ -48,15 +66,10 @@
       display: none;
       pointer-events: none;
     }
-    .question-progress {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: #ffddaa;
-    }
     .menu-button {
       position: fixed;
-      top: 15px;
-      right: 20px;
+      top: 10px;
+      right: 15px;
       z-index: 1000;
     }
     .menu-button a {
@@ -66,13 +79,29 @@
       padding: 8px 14px;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: clamp(0.85rem, 3vw, 0.95rem);
       transition: background-color 0.2s;
     }
-    .menu-button a:hover { background-color: #704c2b; }
+    .menu-button a:hover {
+      background-color: #704c2b;
+    }
+    /* Ajustements petits écrans */
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+      .choice {
+        padding: 12px;
+      }
+      .menu-button {
+        top: 8px;
+        right: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Bouton Retour Menu -->
   <div class="menu-button">
     <a href="home_page.html" title="Retour au menu">🏰 Menu</a>
   </div>
@@ -92,7 +121,7 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhanRyeHlwbW9za3Flb3lsZ21kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0NjE5MDUsImV4cCI6MjA3MDAzNzkwNX0.RcGUqd0BGdGS-iIcChwwkVmg25y3hKvmm0by_HmvTZw"
   );
 
-const level9Questions = [
+    const questions = [
   {
     question: "Quelle est la négation de « Je pense donc je suis » ?",
     choices: [
@@ -194,11 +223,9 @@ const level9Questions = [
     correct: "Une personne non majeure peut voter"
   }
 ];
-
-
   let index = 0;
-  let score = parseInt(localStorage.getItem('score')) || 0;
-  let lives = parseInt(localStorage.getItem('lives')) || 3;
+  let score = 0;
+  let lives = 3;
 
   const questionEl = document.getElementById('question');
   const choicesEl = document.getElementById('choices');
@@ -206,24 +233,35 @@ const level9Questions = [
   const livesEl = document.getElementById('lives');
   const statusEl = document.getElementById('status');
   const feedbackImage = document.getElementById('feedbackImage');
+  const progressEl = document.getElementById('progress');
 
   function updateDisplay() {
     scoreEl.textContent = `Score : ${score}`;
     livesEl.textContent = `Vies : ${'❤️'.repeat(lives)}`;
+    progressEl.textContent = `Question ${index + 1} / ${questions.length}`;
   }
 
   function showQuestion() {
-    if (index >= level9Questions.length) {
+    if (index >= questions.length) {
       updateProgression();
       return;
     }
+
     updateDisplay();
-    const q = level9Questions[index];
-    questionEl.textContent = q.question;
+    const q = questions[index];
+    statusEl.textContent = '';
     choicesEl.innerHTML = '';
     feedbackImage.style.display = 'none';
-    statusEl.textContent = '';
-    document.getElementById('progress').textContent = `Question ${index + 1} / ${level9Questions.length}`;
+    questionEl.innerHTML = q.question;
+
+    if (q.trickId) {
+      setTimeout(() => {
+        const trick = document.getElementById(q.trickId);
+        if (trick) {
+          trick.onclick = () => handleAnswer(true);
+        }
+      }, 10);
+    }
 
     q.choices.forEach(choice => {
       const btn = document.createElement('div');
@@ -237,6 +275,7 @@ const level9Questions = [
   function handleAnswer(correct) {
     feedbackImage.src = correct ? 'correct.png' : 'wrong.png';
     feedbackImage.style.display = 'block';
+
     if (correct) {
       score++;
       statusEl.textContent = "Bonne réponse !";
@@ -246,6 +285,7 @@ const level9Questions = [
       statusEl.textContent = "NOPE !";
       updateDisplay();
     }
+
     setTimeout(() => {
       feedbackImage.style.display = 'none';
       if (lives <= 0) {
@@ -260,12 +300,14 @@ const level9Questions = [
   async function updateProgression() {
     const user_id = localStorage.getItem('user_id');
     const newLevel = 10;
+
     if (user_id) {
       const { data, error } = await supabase
         .from('progressions')
         .select('level')
         .eq('user_id', user_id)
         .single();
+
       if (!error && data && data.level < newLevel) {
         await supabase
           .from('progressions')
@@ -273,8 +315,9 @@ const level9Questions = [
           .eq('user_id', user_id);
       }
     }
+
     localStorage.setItem('currentLevel', newLevel);
-    alert("Bravo ! Tu as terminé le niveau 9.");
+    alert("Bravo ! Tu as terminé le niveau 9 !");
     window.location.href = 'home_page.html';
   }
 
@@ -292,18 +335,22 @@ const level9Questions = [
       window.location.href = "login.html";
       return;
     }
+
     const { data, error } = await supabase
       .from("progressions")
       .select("level")
       .eq("user_id", user_id)
       .single();
+
     const currentUnlockedLevel = data?.level || 1;
-    const thisLevel = 9;
+    const thisLevel = 10;
+
     if (thisLevel > currentUnlockedLevel + 1) {
       alert("Tu n'as pas encore débloqué ce niveau !");
       window.location.href = "home_page.html";
       return;
     }
+
     showQuestion();
   })();
 </script>
