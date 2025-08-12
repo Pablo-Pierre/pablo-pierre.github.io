@@ -2,63 +2,105 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion / Inscription</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.3/dist/umd/supabase.min.js"></script>
   <style>
     body {
-      background-color: #222;
+      background-color: #1a1a1a;
       color: #fff6dd;
       font-family: 'Arial', sans-serif;
       text-align: center;
-      padding: 50px;
+      padding: 20px;
+      margin: 0;
     }
+
     h1 {
-      font-size: 2.2rem;
-      margin-bottom: 30px;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
     }
-    input {
-      padding: 10px;
+
+    h4 {
+      font-weight: normal;
       font-size: 1rem;
-      margin: 10px;
+      margin: 5px 0;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: rgba(92, 59, 30, 0.15);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 246, 221, 0.2);
+    }
+
+    input {
+      padding: 15px;
+      font-size: 1.2rem;
+      margin: 10px 0;
       border-radius: 8px;
       border: none;
-      width: 250px;
+      width: 100%;
+      max-width: 350px;
+      box-sizing: border-box;
     }
+
     button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      margin: 10px;
+      padding: 15px;
+      font-size: 1.2rem;
+      margin: 10px 5px;
       background-color: #5c3b1e;
       color: #fff6dd;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      width: calc(50% - 10px);
+      min-width: 120px;
     }
+
     button:hover {
       background-color: #704c2b;
     }
+
     #status {
       margin-top: 20px;
       font-size: 1.1rem;
       color: #ffccaa;
     }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      input, button {
+        font-size: 1rem;
+      }
+      button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Connexion au Royaume</h1>
-  <h4>Si tu veux tester tous les niveaux connecte toi avec :</h4>
-  <h4>Pseudo : Pablito</h4>
-  <h4>Email : pablopierre0601@gmail.com</h4>
-  <h4>Mot de passe: pablito</h4> 
+  <div class="container">
+    <h1>Connexion au Royaume</h1>
+    <h4>Si tu veux tester tous les niveaux connecte-toi avec :</h4>
+    <h4><strong>Pseudo :</strong> Pablito</h4>
+    <h4><strong>Email :</strong> pablopierre0601@gmail.com</h4>
+    <h4><strong>Mot de passe :</strong> pablito</h4> 
 
-  <input type="text" id="pseudo" placeholder="Pseudo" required><br>
-  <input type="email" id="email" placeholder="Email" required><br>
-  <input type="password" id="password" placeholder="Mot de passe" required><br>
+    <input type="text" id="pseudo" placeholder="Pseudo" required><br>
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Mot de passe" required><br>
 
-  <button onclick="signIn()">Se connecter</button>
-  <button onclick="signUp()">S’inscrire</button>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+      <button onclick="signIn()">Se connecter</button>
+      <button onclick="signUp()">S’inscrire</button>
+    </div>
 
-  <div id="status"></div>
+    <div id="status"></div>
+  </div>
 
   <script>
     const supabase = window.supabase.createClient(
@@ -84,7 +126,7 @@
       }
 
       document.getElementById('status').textContent = "Inscription réussie ! Connexion...";
-      setTimeout(() => signIn(pseudo), 1500); // on passe le pseudo
+      setTimeout(() => signIn(pseudo), 1500);
     }
 
     async function signIn(pseudo = "") {
@@ -121,20 +163,12 @@
       if (error || !data) {
         const { error: insertError } = await supabase
           .from('progressions')
-          .insert([
-            {
-              user_id: userId,
-              level: 1,
-              pass: password,
-              pseudo: pseudo
-            }
-          ]);
+          .insert([{ user_id: userId, level: 1, pass: password, pseudo: pseudo }]);
 
         if (insertError) {
           document.getElementById('status').textContent = "Erreur progression : " + insertError.message;
           return;
         }
-
         localStorage.setItem('currentLevel', 1);
       } else {
         localStorage.setItem('currentLevel', data.level);
